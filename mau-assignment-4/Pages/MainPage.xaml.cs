@@ -32,10 +32,8 @@ public partial class MainPage : ContentPage
 	/// </summary>
 	private void OnEntryTextChanged(object sender, TextChangedEventArgs e)
 	{
-		if (sender is Entry entry)
-		{
-			_pageModel.OnTextChangedCommand.Execute((entry, e));
-		}
+
+		_pageModel.OnTextChangedCommand.Execute((sender, e));		
 	}
 
 	/// <summary>

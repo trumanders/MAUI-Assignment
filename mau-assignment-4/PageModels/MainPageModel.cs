@@ -1107,9 +1107,8 @@ public partial class MainPageModel : INotifyPropertyChanged
 		});
 
 		OnTextChangedCommand = new Command<object>(param =>
-		{			
-
-			var (sender, e) = ((Entry, TextChangedEventArgs))param;
+		{				
+			var (sender, e) = ((object, TextChangedEventArgs))param;
 			if (sender is Entry entry)
 			{
 				if (!string.IsNullOrEmpty(entry.Text) && !int.TryParse(e.NewTextValue, out _))
