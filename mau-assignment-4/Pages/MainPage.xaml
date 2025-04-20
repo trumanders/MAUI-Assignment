@@ -1,0 +1,1012 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="mau_assignment_4.Pages.MainPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:animalEnum="clr-namespace:mau_assignment_4.Models.Enums.Animals"
+	xmlns:animalService="clr-namespace:mau_assignment_4.Services"
+	xmlns:converters="clr-namespace:mau_assignment_4.Converters"
+	xmlns:enums="clr-namespace:mau_assignment_4.Models.Enums"
+	xmlns:models="clr-namespace:mau_assignment_4.Models"
+	xmlns:pageModels="clr-namespace:mau_assignment_4.PageModels"
+	x:DataType="pageModels:MainPageModel">
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<converters:EnumFlagToBoolConverter x:Key="EnumFlagToBoolConverter" />
+			<converters:CategoryVisibleBoolConverter x:Key="CategoryVisibleBoolConverter" />
+			<converters:SpeciesVisibleBoolConverter x:Key="SpeciesVisibleBoolConverter" />
+			<converters:EmptyStringToIntConverter x:Key="EmptyStringToIntConverter" />
+			<converters:BooleanNegativeConverter x:Key="BooleanNegativeConverter" />
+			<converters:BoolToGrayConverter x:Key="BoolToGrayConverter" />
+		</ResourceDictionary>
+	</ContentPage.Resources>
+	<ContentPage.MenuBarItems>
+		<MenuBarItem Text="File">
+			<MenuFlyoutItem Clicked="OnMenuBarNewClicked" Text="New" />
+			<MenuFlyoutItem Clicked="OnMenuBarOpenClicked" Text="Open" />
+			<MenuFlyoutItem Clicked="OnMenuBarSaveClicked" Text="Save" />
+			<MenuFlyoutItem Clicked="OnMenuBarSaveAsClicked" Text="Save as ..." />
+		</MenuBarItem>
+	</ContentPage.MenuBarItems>
+	<Grid>
+		<Grid.GestureRecognizers>
+			<TapGestureRecognizer Command="{Binding OnMainPageClickCommand}" />
+		</Grid.GestureRecognizers>
+		<ScrollView>
+			<HorizontalStackLayout Margin="10" Spacing="10">
+				<!--  LEFT SECTION: ANIMAL  -->
+				<VerticalStackLayout Spacing="10">
+					<Border
+						Padding="20"
+						VerticalOptions="Start"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="Animal"
+								VerticalTextAlignment="Center" />
+
+							<!--  Category pick  -->
+							<Label Text="Category" />
+							<Picker
+								Margin="0,0,0,20"
+								HorizontalOptions="Start"
+								IsEnabled="{Binding IsListAllSpeciesChecked, Converter={StaticResource BooleanNegativeConverter}}"
+								ItemsSource="{Binding Categories}"
+								SelectedItem="{Binding SelectedCategory}"
+								WidthRequest="200" />
+
+							<!--  Species pick  -->
+							<Label Text="Species" />
+							<HorizontalStackLayout>
+								<Picker
+									Margin="0,0,0,20"
+									ItemsSource="{Binding CategorySpecies}"
+									SelectedItem="{Binding SelectedSpecies}"
+									WidthRequest="200" />
+								<CheckBox IsChecked="{Binding IsListAllSpeciesChecked}" VerticalOptions="Center" />
+								<Label Text="List all species" VerticalTextAlignment="Center" />
+							</HorizontalStackLayout>
+							<HorizontalStackLayout Spacing="10">
+								<VerticalStackLayout>
+
+									<!--  Personal Name  -->
+									<Label Text="Personal Name" />
+									<Entry
+										Margin="0,0,0,20"
+										HorizontalOptions="Start"
+										Placeholder="Enter personal name"
+										Text="{Binding PersonalName}"
+										WidthRequest="220" />
+								</VerticalStackLayout>
+								<VerticalStackLayout>
+
+									<!--  Age  -->
+									<Label Text="Age" />
+									<Entry
+										x:Name="entryName"
+										Margin="0,0,0,20"
+										Placeholder="Enter age"
+										Text="{Binding AgeInYears, Converter={StaticResource EmptyStringToIntConverter}}"
+										TextChanged="OnEntryTextChanged"
+										WidthRequest="100" />
+								</VerticalStackLayout>
+							</HorizontalStackLayout>
+
+							<!--  Gender  -->
+							<Label Text="Gender" />
+							<Picker
+								Margin="0,0,0,20"
+								HorizontalOptions="Start"
+								ItemsSource="{Binding Genders}"
+								SelectedItem="{Binding Gender}"
+								WidthRequest="180" />
+							<HorizontalStackLayout Margin="0,0,0,20">
+
+								<!--  Venomous  -->
+								<HorizontalStackLayout Spacing="10" WidthRequest="150">
+									<Label Text="Venomous" VerticalOptions="Center" />
+									<Switch IsToggled="{Binding IsVenomous}" />
+								</HorizontalStackLayout>
+
+								<!--  Endangered  -->
+								<HorizontalStackLayout Spacing="10">
+									<Label Text="Endangered" VerticalOptions="Center" />
+									<Switch IsToggled="{Binding IsEndangered}" />
+								</HorizontalStackLayout>
+							</HorizontalStackLayout>
+
+							<!--  Diet types  -->
+							<Label Text="Diet types:" />
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+
+								<!--  Diet types row 1  -->
+								<CheckBox
+									x:Name="chbx_herbivore"
+									Grid.Row="0"
+									IsChecked="{Binding DietTypes, Converter={StaticResource EnumFlagToBoolConverter}, ConverterParameter={x:Static enums:DietTypesEnum.Herbivore}, Mode=TwoWay}"
+									VerticalOptions="Center" />
+								<Label
+									Grid.Row="0"
+									Grid.Column="1"
+									Margin="0,0,20,0"
+									HorizontalOptions="Start"
+									Text="Herbivore"
+									VerticalOptions="Center" />
+								<CheckBox
+									x:Name="chbx_carnivore"
+									Grid.Row="0"
+									Grid.Column="2"
+									IsChecked="{Binding DietTypes, Converter={StaticResource EnumFlagToBoolConverter}, ConverterParameter={x:Static enums:DietTypesEnum.Carnivore}, Mode=TwoWay}" />
+								<Label
+									Grid.Row="0"
+									Grid.Column="3"
+									Margin="0,0,20,0"
+									HorizontalOptions="Start"
+									Text="Carnivore"
+									VerticalOptions="Center" />
+
+								<!--  Diet types row 2  -->
+								<CheckBox
+									x:Name="chbx_omnivore"
+									Grid.Row="1"
+									IsChecked="{Binding DietTypes, Converter={StaticResource EnumFlagToBoolConverter}, ConverterParameter={x:Static enums:DietTypesEnum.Omnivore}, Mode=TwoWay}"
+									VerticalOptions="Center" />
+								<Label
+									Grid.Row="1"
+									Grid.Column="1"
+									Margin="0,0,20,0"
+									HorizontalOptions="Start"
+									Text="Omnivore"
+									VerticalOptions="Center" />
+								<CheckBox
+									x:Name="chbx_insectivore"
+									Grid.Row="1"
+									Grid.Column="2"
+									IsChecked="{Binding DietTypes, Converter={StaticResource EnumFlagToBoolConverter}, ConverterParameter={x:Static enums:DietTypesEnum.Insectivore}, Mode=TwoWay}" />
+								<Label
+									Grid.Row="1"
+									Grid.Column="3"
+									Margin="0,0,20,0"
+									HorizontalOptions="Start"
+									Text="Insectivore"
+									VerticalOptions="Center" />
+
+								<!--  Diet types row 3  -->
+								<CheckBox
+									x:Name="chbx_frugivore"
+									Grid.Row="2"
+									IsChecked="{Binding DietTypes, Converter={StaticResource EnumFlagToBoolConverter}, ConverterParameter={x:Static enums:DietTypesEnum.Frugivore}, Mode=TwoWay}"
+									VerticalOptions="Center" />
+								<Label
+									Grid.Row="2"
+									Grid.Column="1"
+									Margin="0,0,20,0"
+									HorizontalOptions="Start"
+									Text="Frugivore"
+									VerticalOptions="Center" />
+								<CheckBox
+									x:Name="chbx_piscivore"
+									Grid.Row="2"
+									Grid.Column="2"
+									IsChecked="{Binding DietTypes, Converter={StaticResource EnumFlagToBoolConverter}, ConverterParameter={x:Static enums:DietTypesEnum.Piscivore}, Mode=TwoWay}" />
+								<Label
+									Grid.Row="2"
+									Grid.Column="3"
+									Margin="0,0,20,0"
+									HorizontalOptions="Start"
+									Text="Piscivore"
+									VerticalOptions="Center" />
+
+								<!--  Diet types row 4  -->
+								<CheckBox
+									x:Name="chbx_nectarivore"
+									Grid.Row="3"
+									IsChecked="{Binding DietTypes, Converter={StaticResource EnumFlagToBoolConverter}, ConverterParameter={x:Static enums:DietTypesEnum.Nectarivore}, Mode=TwoWay}"
+									VerticalOptions="Center" />
+								<Label
+									Grid.Row="3"
+									Grid.Column="1"
+									Margin="0,0,20,0"
+									HorizontalOptions="Start"
+									Text="Nectarivore"
+									VerticalOptions="Center" />
+								<CheckBox
+									x:Name="chbx_folivore"
+									Grid.Row="3"
+									Grid.Column="2"
+									IsChecked="{Binding DietTypes, Converter={StaticResource EnumFlagToBoolConverter}, ConverterParameter={x:Static enums:DietTypesEnum.Folivore}, Mode=TwoWay}" />
+								<Label
+									Grid.Row="3"
+									Grid.Column="3"
+									Margin="0,0,20,0"
+									HorizontalOptions="Start"
+									Text="Folivore"
+									VerticalOptions="Center" />
+							</Grid>
+						</VerticalStackLayout>
+					</Border>
+					<Border
+						Margin="0,0,0,0"
+						Padding="10"
+						BackgroundColor="AliceBlue"
+						Stroke="Black"
+						StrokeThickness="1"
+						WidthRequest="250">
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding OnClearClickCommand}" />
+						</Border.GestureRecognizers>
+						<Label
+							FontSize="12"
+							HorizontalOptions="Center"
+							Text="Clear form"
+							VerticalOptions="Center" />
+					</Border>
+				</VerticalStackLayout>
+				<VerticalStackLayout Spacing="10" WidthRequest="400">
+
+					<!--  RIGHT UPPER: CATEGORIES  -->
+					<!--  Bird  -->
+					<Border
+						Padding="20"
+						IsVisible="{Binding SelectedCategory, Converter={StaticResource CategoryVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:Category.Bird}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedCategory}"
+								VerticalTextAlignment="Center" />
+
+							<!--  Migratory pattern  -->
+							<Label Text="Migratory Pattern" />
+							<Picker
+								Margin="0,0,0,20"
+								HorizontalOptions="Start"
+								ItemsSource="{Binding MigratoryPatterns}"
+								SelectedItem="{Binding MigratoryPattern}"
+								WidthRequest="180" />
+
+							<!--  Egg incubation temperature  -->
+							<Label Text="Egg Incubation Temperature (°C)" />
+							<Entry
+								Margin="0,0,0,10"
+								HorizontalOptions="Start"
+								Placeholder="Enter temperature in Celcius"
+								Text="{Binding EggIncubationTemperature, Converter={StaticResource EmptyStringToIntConverter}}"
+								TextChanged="OnEntryTextChanged"
+								WidthRequest="200" />
+						</VerticalStackLayout>
+					</Border>
+
+					<!--  Mammal  -->
+					<Border
+						Padding="20"
+						IsVisible="{Binding SelectedCategory, Converter={StaticResource CategoryVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:Category.Mammal}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedCategory}"
+								VerticalTextAlignment="Center" />
+
+							<!--  Weight  -->
+							<Label Text="Weight" />
+							<HorizontalStackLayout Spacing="10">
+								<Entry
+									Margin="0,0,0,20"
+									Placeholder="Enter weight"
+									Text="{Binding WeightInGrams, Converter={StaticResource EmptyStringToIntConverter}}"
+									TextChanged="OnEntryTextChanged"
+									WidthRequest="180" />
+								<Label Text="grams" VerticalOptions="Center" />
+							</HorizontalStackLayout>
+
+							<!--  Lactation period  -->
+							<Label Text="Lactation period" />
+							<HorizontalStackLayout>
+								<Entry
+									Margin="0,0,10,20"
+									Placeholder="Enter lactation period"
+									Text="{Binding LactationPeriodInWeeks, Converter={StaticResource EmptyStringToIntConverter}}"
+									TextChanged="OnEntryTextChanged"
+									WidthRequest="180" />
+								<Label Text="weeks" VerticalOptions="Center" />
+							</HorizontalStackLayout>
+							<HorizontalStackLayout>
+								<HorizontalStackLayout Spacing="10" WidthRequest="210">
+
+									<!--  Nursing  -->
+									<Label Text="Currently nursing" VerticalOptions="Center" />
+									<Switch IsToggled="{Binding IsCurrentlyNursing}" />
+								</HorizontalStackLayout>
+								<HorizontalStackLayout Spacing="10">
+
+									<!--  Pregnant  -->
+									<Label Text="Pregnant" VerticalOptions="Center" />
+									<Switch IsToggled="{Binding IsPregnant}" />
+								</HorizontalStackLayout>
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+
+					<!--  Reptile  -->
+					<Border
+						Padding="20"
+						IsVisible="{Binding SelectedCategory, Converter={StaticResource CategoryVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:Category.Reptile}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedCategory}"
+								VerticalTextAlignment="Center" />
+
+							<!--  Number of eggs laid  -->
+							<Label Text="Typcal number of eggs laid" VerticalOptions="Center" />
+							<Entry
+								Margin="0,0,0,20"
+								HorizontalOptions="Start"
+								Placeholder="Enter number of eggs"
+								Text="{Binding TypicalNumberOfEggsLaid, Converter={StaticResource EmptyStringToIntConverter}}"
+								TextChanged="OnEntryTextChanged"
+								WidthRequest="180" />
+						</VerticalStackLayout>
+					</Border>
+
+					<!--  RIGHT BOTTOM: SPECIES  -->
+					<!--  Eagle  -->
+					<Border
+						Margin="0,0,0,10"
+						Padding="20"
+						IsVisible="{Binding SelectedSpecies, Converter={StaticResource SpeciesVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:BirdEnum.Eagle}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedSpecies}" />
+
+							<!--  Talons length  -->
+							<Label
+								Margin="0,0,20,0"
+								Text="Talons length"
+								VerticalOptions="Center" />
+							<HorizontalStackLayout>
+								<Entry
+									Margin="0,0,10,20"
+									HorizontalOptions="Start"
+									Placeholder="Enter talons length"
+									Text="{Binding TalonsLengthInMillimeters, Converter={StaticResource EmptyStringToIntConverter}}"
+									TextChanged="OnEntryTextChanged"
+									WidthRequest="180" />
+								<Label Text="millimeters" VerticalOptions="Center" />
+							</HorizontalStackLayout>
+
+							<!--  Has permanent injury  -->
+							<HorizontalStackLayout Spacing="10">
+								<Label Text="Has permanent injury" VerticalOptions="Center" />
+								<Switch IsToggled="{Binding HasPermanentInjury}" />
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+
+					<!--  Parrot  -->
+					<Border
+						Margin="0,0,0,10"
+						Padding="20"
+						IsVisible="{Binding SelectedSpecies, Converter={StaticResource SpeciesVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:BirdEnum.Parrot}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedSpecies}" />
+
+							<!--  Vocabulary size  -->
+							<Label
+								Margin="0,0,20,0"
+								Text="Vocabulary size"
+								VerticalOptions="Center" />
+							<HorizontalStackLayout>
+								<Entry
+									Margin="0,0,10,20"
+									HorizontalOptions="Start"
+									Placeholder="Enter number of words"
+									Text="{Binding VocabularySize, Converter={StaticResource EmptyStringToIntConverter}}"
+									TextChanged="OnEntryTextChanged"
+									WidthRequest="180" />
+								<Label Text="words" VerticalOptions="Center" />
+							</HorizontalStackLayout>
+
+							<!--  Is traied for performance  -->
+							<HorizontalStackLayout Spacing="10">
+								<Label
+									Margin="0,0,20,0"
+									Text="Trained for performance"
+									VerticalOptions="Center" />
+								<Switch IsToggled="{Binding IsTrainedForPerformance}" />
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+					<!--  Penguin  -->
+					<Border
+						Margin="0,0,0,10"
+						Padding="20"
+						IsVisible="{Binding SelectedSpecies, Converter={StaticResource SpeciesVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:BirdEnum.Penguin}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedSpecies}" />
+
+							<!--  >Diving depth  -->
+							<Label Text="Diving depth" VerticalOptions="Center" />
+							<HorizontalStackLayout>
+								<Entry
+									Margin="0,0,10,20"
+									HorizontalOptions="Start"
+									Placeholder="Enter diving depth"
+									Text="{Binding DivingDepthInMeters, Converter={StaticResource EmptyStringToIntConverter}}"
+									TextChanged="OnEntryTextChanged"
+									WidthRequest="180" />
+								<Label Text="meters" VerticalOptions="Center" />
+							</HorizontalStackLayout>
+
+							<!--  Is hand fed  -->
+							<HorizontalStackLayout Spacing="10">
+								<Label Text="Is hand fed" VerticalOptions="Center" />
+								<Switch IsToggled="{Binding IsHandFed}" />
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+
+					<!--  Bat  -->
+					<Border
+						Padding="20"
+						IsVisible="{Binding SelectedSpecies, Converter={StaticResource SpeciesVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:MammalEnum.Bat}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedSpecies}" />
+
+							<!--  Wing area  -->
+							<Label
+								Margin="0,0,20,0"
+								Text="Wing area"
+								VerticalOptions="Center" />
+							<HorizontalStackLayout>
+								<Entry
+									Margin="0,0,10,20"
+									HorizontalOptions="Start"
+									Placeholder="Enter wing area"
+									Text="{Binding WingAreaInCm2, Converter={StaticResource EmptyStringToIntConverter}}"
+									TextChanged="OnEntryTextChanged"
+									WidthRequest="180" />
+								<Label Text="cm²" VerticalOptions="Center" />
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+
+					<!--  Dolphin  -->
+					<Border
+						Margin="0,0,0,10"
+						Padding="20"
+						IsVisible="{Binding SelectedSpecies, Converter={StaticResource SpeciesVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:MammalEnum.Dolphin}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedSpecies}" />
+
+							<!--  Jump height  -->
+							<Label
+								Margin="0,0,20,0"
+								Text="Jumping height"
+								VerticalOptions="Center" />
+							<HorizontalStackLayout>
+								<Entry
+									Margin="0,0,10,20"
+									HorizontalOptions="Start"
+									Placeholder="Enter jumping height"
+									Text="{Binding JumpHeightInCentimeters, Converter={StaticResource EmptyStringToIntConverter}}"
+									TextChanged="OnEntryTextChanged"
+									WidthRequest="180" />
+								<Label Text="centimeters" VerticalOptions="Center" />
+							</HorizontalStackLayout>
+
+							<!--  Unique markings  -->
+							<HorizontalStackLayout Spacing="10">
+								<Label Text="Has unique markings" VerticalOptions="Center" />
+								<Switch IsToggled="{Binding HasUniqueMarkings}" />
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+
+					<!--  Gorilla  -->
+					<Border
+						Padding="20"
+						IsVisible="{Binding SelectedSpecies, Converter={StaticResource SpeciesVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:MammalEnum.Gorilla}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedSpecies}" />
+
+							<!--  Arm span  -->
+							<Label
+								Margin="0,0,20,0"
+								Text="Arm span"
+								VerticalOptions="Center" />
+							<HorizontalStackLayout>
+								<Entry
+									Margin="0,0,10,20"
+									HorizontalOptions="Start"
+									Placeholder="Enter arm span"
+									Text="{Binding ArmSpanInCentimeters, Converter={StaticResource EmptyStringToIntConverter}}"
+									TextChanged="OnEntryTextChanged"
+									WidthRequest="180" />
+								<Label Text="centimeters" VerticalOptions="Center" />
+							</HorizontalStackLayout>
+
+							<!--  Is alpha male  -->
+							<HorizontalStackLayout Spacing="10">
+								<Label Text="Is alpha male" VerticalOptions="Center" />
+								<Switch IsToggled="{Binding IsAlphaMale}" />
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+
+					<!--  Alligator  -->
+					<Border
+						Margin="0,0,0,10"
+						Padding="20"
+						IsVisible="{Binding SelectedSpecies, Converter={StaticResource SpeciesVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:ReptileEnum.Alligator}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedSpecies}" />
+
+							<!--  Jaw strength  -->
+							<HorizontalStackLayout>
+								<Entry
+									Margin="0,0,10,20"
+									HorizontalOptions="Start"
+									Placeholder="Enter jaw strength"
+									Text="{Binding JawStrengthPSI, Converter={StaticResource EmptyStringToIntConverter}}"
+									TextChanged="OnEntryTextChanged"
+									WidthRequest="180" />
+								<Label Text="PSI" VerticalOptions="Center" />
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+
+					<!--  Chameleon  -->
+					<Border
+						Margin="0,0,0,10"
+						Padding="20"
+						IsVisible="{Binding SelectedSpecies, Converter={StaticResource SpeciesVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:ReptileEnum.Chameleon}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedSpecies}" />
+
+							<!--  Tongue length  -->
+							<Label Text="Tongue length" VerticalOptions="Center" />
+							<HorizontalStackLayout>
+								<Entry
+									Margin="0,0,10,20"
+									HorizontalOptions="Start"
+									Placeholder="Enter tongue length"
+									Text="{Binding TongueLengthInMillimeters, Converter={StaticResource EmptyStringToIntConverter}}"
+									TextChanged="OnEntryTextChanged"
+									WidthRequest="180" />
+								<Label Text="millimeters" VerticalOptions="Center" />
+							</HorizontalStackLayout>
+
+							<!--  Has regrown tail  -->
+							<HorizontalStackLayout Spacing="10">
+								<Label Text="Has regrown tail" VerticalOptions="Center" />
+								<Switch IsToggled="{Binding HasRegrownTail}" />
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+
+					<!--  Komodo  -->
+					<Border
+						Margin="0,0,0,10"
+						Padding="20"
+						IsVisible="{Binding SelectedSpecies, Converter={StaticResource SpeciesVisibleBoolConverter}, ConverterParameter={x:Static animalEnum:ReptileEnum.Komodo}}"
+						WidthRequest="400">
+						<VerticalStackLayout>
+							<Label
+								Margin="0,0,0,20"
+								HorizontalOptions="Center"
+								Style="{StaticResource SubHeadline}"
+								Text="{Binding SelectedSpecies}" />
+
+							<!--  Is part of breeding program  -->
+							<HorizontalStackLayout Spacing="10">
+								<Label Text="Is part of breeding program" VerticalOptions="Center" />
+								<Switch IsToggled="{Binding IsPartOfBreedingProgram}" />
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+					<Image
+						x:Name="animalImage"
+						HorizontalOptions="Center"
+						MaximumHeightRequest="200"
+						Source="{Binding AnimalImage}"
+						WidthRequest="300" />
+
+					<!--  Food schedule  -->
+
+					<HorizontalStackLayout Spacing="7">
+						<Label FontAttributes="Bold" Text="Food Schedule: " />
+						<Label Text="{Binding AddedFoodScheduleName}" />
+					</HorizontalStackLayout>
+					<ScrollView>
+						<Editor
+							HeightRequest="170"
+							IsReadOnly="true"
+							Text="{Binding AddedFoodScheduleEvents}"
+							VerticalTextAlignment="Start" />
+					</ScrollView>
+				</VerticalStackLayout>
+
+				<VerticalStackLayout WidthRequest="440">
+
+					<!--  Animal collection  -->
+					<HorizontalStackLayout Spacing="20">
+						<Label
+							FontAttributes="Bold"
+							HorizontalOptions="Start"
+							Text="Animal collection"
+							VerticalOptions="Center" />
+						<Border
+							Margin="0,0,0,10"
+							Padding="8"
+							BackgroundColor="AliceBlue"
+							HeightRequest="40"
+							Stroke="Black"
+							StrokeThickness="1">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnAllAnimalInfoClickCommand}" CommandParameter="{x:Static enums:SortOption.Name}" />
+							</Border.GestureRecognizers>
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Show all animal info"
+								VerticalOptions="Center" />
+						</Border>
+					</HorizontalStackLayout>
+					<HorizontalStackLayout Spacing="10">
+						<Border Margin="0,0,0,20" Padding="10">
+							<ListView
+								Margin="0,0,0,20"
+								HeightRequest="400"
+								HorizontalOptions="Start"
+								ItemTapped="OnAnimalItemClick"
+								ItemsSource="{Binding Animals}"
+								SelectedItem="{Binding SelectedAnimal, Mode=TwoWay}"
+								SelectionMode="Single"
+								WidthRequest="300">
+								<ListView.Header>
+									<StackLayout>
+										<Grid ColumnDefinitions="0.7*,0.3*">
+											<Label
+												Grid.Row="0"
+												Grid.Column="0"
+												HorizontalOptions="Start"
+												Text="Personal Name" />
+											<Label
+												Grid.Row="0"
+												Grid.Column="1"
+												HorizontalOptions="Start"
+												Text="Species" />
+										</Grid>
+										<BoxView BackgroundColor="Gray" HeightRequest="1" />
+									</StackLayout>
+								</ListView.Header>
+								<ListView.ItemTemplate>
+									<DataTemplate x:DataType="models:Animal">
+										<ViewCell>
+											<Grid Padding="10" ColumnDefinitions="0.7*,0.3*">
+												<Label
+													Grid.Row="1"
+													Grid.Column="0"
+													Text="{Binding PersonalName}" />
+												<Label
+													Grid.Row="1"
+													Grid.Column="1"
+													Text="{Binding Species}" />
+											</Grid>
+										</ViewCell>
+									</DataTemplate>
+								</ListView.ItemTemplate>
+							</ListView>
+						</Border>
+
+						<!--  Button: Sort by name  -->
+						<VerticalStackLayout Spacing="10" VerticalOptions="End">
+
+							<!--  BUTTONS  -->
+							<!--  Sort by name  -->
+							<Border
+								Padding="8"
+								BackgroundColor="AliceBlue"
+								HeightRequest="40"
+								Stroke="Black"
+								StrokeThickness="1">
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding OnSortAnimalsClickCommand}" CommandParameter="{x:Static enums:SortOption.Name}" />
+								</Border.GestureRecognizers>
+								<Label
+									FontSize="12"
+									HorizontalOptions="Center"
+									Text="Sort by name"
+									VerticalOptions="Center" />
+							</Border>
+
+							<!--  Sort by species  -->
+							<Border
+								Margin="0,0,0,30"
+								Padding="8"
+								BackgroundColor="AliceBlue"
+								HeightRequest="40"
+								Stroke="Black"
+								StrokeThickness="1">
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding OnSortAnimalsClickCommand}" CommandParameter="{x:Static enums:SortOption.Species}" />
+								</Border.GestureRecognizers>
+								<Label
+									FontSize="12"
+									HorizontalOptions="Center"
+									Text="Sort by species"
+									VerticalOptions="Center" />
+							</Border>
+
+							<!--  Add image  -->
+							<Border
+								Padding="10"
+								BackgroundColor="AliceBlue"
+								Stroke="Black"
+								StrokeThickness="1">
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding OnSelectImageClickCommand}" />
+								</Border.GestureRecognizers>
+								<Label
+									FontSize="12"
+									HorizontalOptions="Center"
+									Text="Add Image"
+									VerticalOptions="Center" />
+							</Border>
+
+							<!--  Remove image  -->
+							<Border
+								Margin="0,0,0,30"
+								Padding="10"
+								BackgroundColor="AliceBlue"
+								Stroke="Black"
+								StrokeThickness="1">
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding OnRemoveImageClickCommand}" />
+								</Border.GestureRecognizers>
+								<Label
+									FontSize="12"
+									HorizontalOptions="Center"
+									Text="Remove Image"
+									VerticalOptions="Center" />
+							</Border>
+
+							<!--  Delete  -->
+							<Border
+								Margin="0,0,0,0"
+								Padding="10"
+								BackgroundColor="AliceBlue"
+								Stroke="Black"
+								StrokeThickness="1">
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding OnDeleteAnimalClickCommand}" />
+								</Border.GestureRecognizers>
+								<Label
+									FontSize="12"
+									HorizontalOptions="Center"
+									Text="Delete"
+									VerticalOptions="Center" />
+							</Border>
+
+							<!--  Save changes  -->
+							<Border
+								Margin="0,0,0,0"
+								Padding="10"
+								BackgroundColor="AliceBlue"
+								Stroke="Black"
+								StrokeThickness="1">
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding OnChangeAnimalClickCommand}" />
+								</Border.GestureRecognizers>
+								<Label
+									FontSize="12"
+									HorizontalOptions="Center"
+									Text="Save changes"
+									TextColor="{Binding IsSaveChangesEnabled, Converter={StaticResource BoolToGrayConverter}}"
+									VerticalOptions="Center" />
+							</Border>
+
+							<!--  Add animal  -->
+							<Border
+								Margin="0,0,0,21"
+								Padding="10"
+								BackgroundColor="AliceBlue"
+								Stroke="Black"
+								StrokeThickness="1">
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding OnAddAnimalClickCommand}" />
+								</Border.GestureRecognizers>
+								<Label
+									FontSize="12"
+									HorizontalOptions="Center"
+									Text="Add animal"
+									VerticalOptions="Center" />
+							</Border>
+						</VerticalStackLayout>
+					</HorizontalStackLayout>
+
+					<!--  Food Schedule Collection header  -->
+					<HorizontalStackLayout Spacing="20">
+						<Label
+							FontAttributes="Bold"
+							HorizontalOptions="Start"
+							Text="Food schedules collection"
+							VerticalOptions="Center" />
+
+						<!--  BUTTON - Add food schedule to Animal  -->
+						<Border
+							Margin="0,0,0,10"
+							Padding="8"
+							BackgroundColor="AliceBlue"
+							HeightRequest="40"
+							Stroke="Black"
+							StrokeThickness="1">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnAddFoodScheduleToUIClickCommand}" />
+							</Border.GestureRecognizers>
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Add to animal"
+								TextColor="{Binding IsAddFoodScheduleToUIButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
+								VerticalOptions="Center" />
+						</Border>
+
+						<!--  BUTTON - Create  Food schedule  -->
+						<Border
+							Margin="0,0,0,10"
+							Padding="8"
+							BackgroundColor="AliceBlue"
+							HeightRequest="40"
+							Stroke="Black"
+							StrokeThickness="1">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnCreateFoodScheduleClickCommand}" />
+							</Border.GestureRecognizers>
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Create"
+								VerticalOptions="Center" />
+						</Border>
+
+						<!--  BUTTON - Edit Food Schedule  -->
+						<Border
+							Margin="0,0,0,10"
+							Padding="8"
+							BackgroundColor="AliceBlue"
+							HeightRequest="40"
+							Stroke="Black"
+							StrokeThickness="1">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnEditFoodScheduleClickCommand}" />
+							</Border.GestureRecognizers>
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Edit"
+								TextColor="{Binding IsEditButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
+								VerticalOptions="Center" />
+						</Border>
+					</HorizontalStackLayout>
+
+					<!--  Food Schedule Collection  -->
+					<Border Margin="0,0,0,20" Padding="10">
+						<ListView
+							x:Name="foodScheduleListView"
+							Margin="0,0,0,20"
+							HeightRequest="400"
+							HorizontalOptions="Start"
+							ItemTapped="OnFoodScheduleItemClicked"
+							ItemsSource="{Binding FoodSchedules}"
+							SelectedItem="{Binding SelectedFoodSchedule, Mode=TwoWay}"
+							SelectionMode="Single"
+							WidthRequest="300">
+							<ListView.Header>
+								<StackLayout>
+									<Grid ColumnDefinitions="0.7*,0.3*">
+										<Label
+											Grid.Row="0"
+											Grid.Column="0"
+											HorizontalOptions="Start"
+											Text="Schedule Name" />
+										<!--<Label
+											Grid.Row="0"
+											Grid.Column="1"
+											HorizontalOptions="Start"
+											Text="Species" />-->
+									</Grid>
+									<BoxView BackgroundColor="Gray" HeightRequest="1" />
+								</StackLayout>
+							</ListView.Header>
+							<ListView.ItemTemplate>
+								<DataTemplate x:DataType="models:FoodSchedule">
+									<ViewCell>
+										<Grid Padding="10" ColumnDefinitions="0.7*,0.3*">
+											<Label
+												Grid.Row="1"
+												Grid.Column="0"
+												Text="{Binding Name, Mode=TwoWay}" />
+											<!--<Label
+												Grid.Row="1"
+												Grid.Column="1"
+												Text="{Binding Species}" />-->
+										</Grid>
+									</ViewCell>
+								</DataTemplate>
+							</ListView.ItemTemplate>
+						</ListView>
+					</Border>
+
+				</VerticalStackLayout>
+			</HorizontalStackLayout>
+		</ScrollView>
+		<!--  Transparent overlay to block interaction with the window / page  -->
+		<BoxView
+			BackgroundColor="Transparent"
+			IsVisible="{Binding IsMainPageBlocked}"
+			Opacity="1" />
+	</Grid>
+</ContentPage>

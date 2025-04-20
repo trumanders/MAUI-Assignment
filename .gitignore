@@ -1,0 +1,43 @@
+# Build
+bin/
+obj/
+AppPackages/
+UserControls/
+*.user
+*.userosscache
+*.suo
+*.vspscc
+*.vssscc
+.vscode/
+
+# Logs
+*.log
+*.tlog
+*.nlog
+
+# User settings
+.vs/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
+packages/
+*.nupkg
+project.lock.json
+project.assets.json
+
+# Config
+appsettings*.json
+secrets.json
+
+# MAUI Specific
+Platforms/iOS/Pods/
+Platforms/iOS/Podfile.lock
+**/*.csproj.user
+**/*.csproj.DotSettings.user
