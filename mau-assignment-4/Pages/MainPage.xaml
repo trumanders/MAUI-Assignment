@@ -25,7 +25,10 @@
 			<MenuFlyoutItem Clicked="OnMenuBarNewClicked" Text="New" />
 			<MenuFlyoutItem Clicked="OnMenuBarOpenClicked" Text="Open" />
 			<MenuFlyoutItem Clicked="OnMenuBarSaveClicked" Text="Save" />
-			<MenuFlyoutItem Clicked="OnMenuBarSaveAsClicked" Text="Save as ..." />
+			<MenuFlyoutSubItem Text="Save as ...">
+				<MenuFlyoutItem Clicked="OnMenuBarSaveAsTextFileClicked" Text="Text file" />
+				<MenuFlyoutItem Clicked="OnMenuBarSaveAsJsonClicked" Text="Json" />
+			</MenuFlyoutSubItem>
 		</MenuBarItem>
 	</ContentPage.MenuBarItems>
 	<Grid>

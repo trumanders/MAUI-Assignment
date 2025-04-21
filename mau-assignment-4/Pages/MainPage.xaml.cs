@@ -74,8 +74,13 @@ public partial class MainPage : ContentPage
 		_pageModel.OnMenuBarSaveClickedCommand.Execute(e);
 	}
 
-	private void OnMenuBarSaveAsClicked(object sender, EventArgs e)
+	private void OnMenuBarSaveAsTextFileClicked(object sender, EventArgs e)
 	{
-		_pageModel.OnMenuBarSaveAsClickedCommand.Execute(e);
+		_pageModel.OnMenuBarSaveAsTextFileClickedCommand.Execute(e);
+	}
+	
+	private void OnMenuBarSaveAsJsonClicked(object sender, EventArgs e)
+	{
+		_pageModel.OnMenuBarSaveAsJsonClickedCommand.Execute(e);
 	}
 }

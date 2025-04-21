@@ -42,12 +42,9 @@ public partial class FoodSchedulePage : ContentPage
 	/// <param name="e">The item that was clicked</param>
 	private void OnEventListItemClicked(object sender, ItemTappedEventArgs e)
 	{
-		if (e.Item != null)
-		{
-			_foodSchedulePageModel?
-				.OnEventListItemClickedCommand
-				.Execute(e.Item);
-		}
+		_foodSchedulePageModel?
+			.OnEventListItemClickedCommand
+			.Execute(e);		
 	}
 
 	/// <summary>

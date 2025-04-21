@@ -191,14 +191,14 @@ public partial class FoodSchedulePageModel : INotifyPropertyChanged
 	{
 		// When an item in the list of schedule events is clicked - set
 		// the appropriate state for the buttons.
-		OnEventListItemClickedCommand = new Command<object>((clickedItem) =>
+		OnEventListItemClickedCommand = new Command<object>((obj) =>
 		{
-			if (clickedItem is string)
+			if (obj != null && obj is ItemTappedEventArgs e && e.Item != null && e.Item is string)
 			{
 				IsAddButtonEnabled = false;
 				IsDeleteButtonEnabled = true;
 				IsChangeButtonEnabled = false;
-				IsSaveButtonEnabled = false;
+				IsSaveButtonEnabled = false;				
 			}
 		});
 

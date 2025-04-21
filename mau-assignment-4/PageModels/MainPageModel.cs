@@ -703,7 +703,8 @@ public partial class MainPageModel : INotifyPropertyChanged
 	public ICommand OnMenuBarNewClickedCommand { get; set; }
 	public ICommand OnMenuBarOpenClickedCommand { get; set; }
 	public ICommand OnMenuBarSaveClickedCommand { get; set; }
-	public ICommand OnMenuBarSaveAsClickedCommand { get; set; }
+	public ICommand OnMenuBarSaveAsTextFileClickedCommand { get; set; }
+	public ICommand OnMenuBarSaveAsJsonClickedCommand { get; set; }
 
 
 
@@ -1149,10 +1150,20 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 		});
 		
-		OnMenuBarSaveAsClickedCommand = new Command(() =>
+		OnMenuBarSaveAsTextFileClickedCommand = new Command(() =>
 		{
 
 		});
+
+		OnMenuBarSaveAsJsonClickedCommand = new Command(() =>
+		{
+
+		});
+	}
+
+	private async Task Save(CancellationToken cancellationToken)
+	{
+		//using (var stream = new MemoryStream()) {
 	}
 
 	/// <summary>
@@ -1184,14 +1195,13 @@ public partial class MainPageModel : INotifyPropertyChanged
 		});
 
 		// If EditingFoodSchedule was sent, AND the edited FoodSchedule is the same as the currently
-		// added FoodSchedule (meaning it is visible in the UI), the changes are reflected in the UI
-		// by calling UpdateAddedFoodSchedule()
+		// added FoodSchedule (meaning it is visible in the UI), the changes to the already added FoodSchedule
+		// are reflected in the UI by calling UpdateAddedFoodSchedule()
 		WeakReferenceMessenger.Default.Register<EditingFoodScheduleMessage>(this, (r, m) =>
 		{
 			if (m.Value is FoodSchedule foodSchedule)
 			{
 				if (foodSchedule == AddedFoodSchedule) //LÄGG INTE IN SCHEDULE OM SCHEDULE-RUTAN ÄR TOM!
-
 					UpdateAddedFoodSchedule();
 			}
 		});
