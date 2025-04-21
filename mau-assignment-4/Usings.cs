@@ -1,4 +1,6 @@
-﻿global using CommunityToolkit.Mvvm.Messaging;
+﻿global using CommunityToolkit.Maui;
+global using CommunityToolkit.Maui.Storage;
+global using CommunityToolkit.Mvvm.Messaging;
 global using CommunityToolkit.Mvvm.Messaging.Messages;
 global using mau_assignment_4.Interfaces;
 global using mau_assignment_4.Models;
@@ -14,4 +16,6 @@ global using System.Collections.ObjectModel;
 global using System.ComponentModel;
 global using System.Globalization;
 global using System.Runtime.CompilerServices;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
 global using System.Windows.Input;

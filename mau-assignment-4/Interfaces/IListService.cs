@@ -19,4 +19,8 @@ public interface IListService<T>
 	public string[] ToStringArray(); // mandatory
 
 	public List<string> ToStringList();
+
+	public Task SaveAsJson();
+	public Task OpenFromJson();
+	public bool XMLSeralize(string fileName);
 }

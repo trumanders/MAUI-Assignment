@@ -4,6 +4,8 @@ public class Penguin : Bird
 {
 	public int? DivingDepthInMeters { get; set; }
 	public bool IsHandFed { get; set; }
+	public new BirdEnum? Species { get; set; }
+
 
 	public void Toboggan()
 	{

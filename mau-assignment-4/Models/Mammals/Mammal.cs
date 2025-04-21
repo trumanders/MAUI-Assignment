@@ -1,6 +1,6 @@
 ﻿namespace mau_assignment_4.Models.Mammals;
 
-public abstract class Mammal : Animal
+public class Mammal : Animal
 {
 	public int? WeightInGrams { get; set; }
 	public int? LactationPeriodInWeeks { get; set; }

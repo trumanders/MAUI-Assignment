@@ -5,6 +5,7 @@ public class Eagle : Bird
 
 	public int? TalonsLengthInMillimeters { get; set; }
 	public bool HasPermanentInjury { get; set; }
+	public new BirdEnum Species { get; } = BirdEnum.Eagle;
 	public void Soar()
 	{
 		throw new NotImplementedException();

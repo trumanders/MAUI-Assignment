@@ -3,6 +3,8 @@
 public class Komodo : Reptile
 {
 	public bool IsPartOfBreedingProgram { get; set; }
+	public new ReptileEnum? Species { get; } = ReptileEnum.Komodo;
+
 
 	public void Venomize()
 	{

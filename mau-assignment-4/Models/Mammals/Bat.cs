@@ -3,6 +3,8 @@
 public class Bat : Mammal
 {
 	public int? WingAreaInCm2 { get; set; }
+	public new MammalEnum? Species { get; set; }
+
 	public void Echolocate()
 	{
 		throw new NotImplementedException();

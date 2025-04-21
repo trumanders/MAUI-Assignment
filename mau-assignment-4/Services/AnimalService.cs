@@ -195,7 +195,7 @@ public class AnimalService(
 	/// </summary>
 	/// <returns>A string array containing all animals' info</returns>
 	private string[] GetAnimalInfoStrings()
-	{
+	{		
 		var allAnimalInfo = Animals.Select(animal => GetAnimalInfo(animal) + Environment.NewLine + Environment.NewLine).ToArray();
 		return allAnimalInfo;
 	}
@@ -205,7 +205,7 @@ public class AnimalService(
 	/// </summary>
 	/// <param name="animal"></param>
 	/// <returns></returns>
-	private string GetAnimalInfo(Animal animal) // Not implemented (not described in assignment)
+	private static string GetAnimalInfo(Animal animal) // Not implemented (not described in assignment)
 	{
 		return animal.ToString();
 	}

@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using mau_assignment_4.Pages;
-
+﻿using mau_assignment_4.Pages;
 namespace mau_assignment_4.PageModels;
 
 /// <summary>
@@ -1138,11 +1136,12 @@ public partial class MainPageModel : INotifyPropertyChanged
 		{
 			ClearAnimalCollection();
 			ClearFoodScheduleCollection();
+			ClearUI();
 		});
 
-		OnMenuBarOpenClickedCommand = new Command(() =>
+		OnMenuBarOpenClickedCommand = new Command(async () =>
 		{
-
+			await ((AnimalService)_animalService).OpenFromJson();
 		});
 		
 		OnMenuBarSaveClickedCommand = new Command(() =>
@@ -1150,20 +1149,15 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 		});
 		
-		OnMenuBarSaveAsTextFileClickedCommand = new Command(() =>
+		OnMenuBarSaveAsTextFileClickedCommand = new Command(async () =>
 		{
-
 		});
 
-		OnMenuBarSaveAsJsonClickedCommand = new Command(() =>
+		OnMenuBarSaveAsJsonClickedCommand = new Command(async () =>
 		{
+			await((AnimalService)_animalService).SaveAsJson();
 
 		});
-	}
-
-	private async Task Save(CancellationToken cancellationToken)
-	{
-		//using (var stream = new MemoryStream()) {
 	}
 
 	/// <summary>

@@ -1,6 +1,6 @@
 ﻿namespace mau_assignment_4.Models.Birds;
 
-public abstract class Bird : Animal
+public class Bird : Animal
 {
 	public MigratoryPattern? MigratoryPattern { get; set; }
 	public int? EggIncubationTemperature { get; set; }

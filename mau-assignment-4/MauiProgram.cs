@@ -1,4 +1,5 @@
-﻿namespace mau_assignment_4;
+﻿
+namespace mau_assignment_4;
 
 
 public static class MauiProgram
@@ -8,6 +9,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
+			.UseMauiCommunityToolkit()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -20,6 +22,7 @@ public static class MauiProgram
 		builder.Services.AddTransient(typeof(IListService<>), typeof(ListService<>));
 		builder.Services.AddTransient<IFoodScheduleService, FoodScheduleService>();
 		builder.Services.AddTransient<IPropertyValidator, PropertyValidator>();
+		builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
 
 #if DEBUG
 		builder.Logging.AddDebug();

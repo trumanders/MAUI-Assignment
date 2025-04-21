@@ -9,21 +9,25 @@ public partial class MainPage : ContentPage
 	/// <param name="pageModel">The model containing the data to bind to the page.</param>
 
 	private readonly MainPageModel _pageModel;
-	public MainPage(MainPageModel pageModel)
-    {
-        InitializeComponent();
+	private readonly IFileSaver _fileSaver;
+	public MainPage(MainPageModel pageModel, IFileSaver fileSaver)
+	{
+		InitializeComponent();
 		_pageModel = pageModel;
 		this.BindingContext = _pageModel;
+		_fileSaver = fileSaver;
 
 		if (DeviceInfo.Platform == DevicePlatform.WinUI)
 		{
 			var window = Application.Current?.Windows[0];
 			if (window != null)
 			{
-				window.Width = 1350; 
-				window.Height = 1000; 
+				window.Width = 1350;
+				window.Height = 1000;
 			}
 		}
+
+		_fileSaver = fileSaver;
 	}
 
 	/// <summary>

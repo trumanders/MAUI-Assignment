@@ -4,6 +4,8 @@ public class Gorilla : Mammal
 {
 	public int? ArmSpanInCentimeters { get; set; }
 	public bool IsAlphaMale { get; set; }
+	public new MammalEnum Species { get; } = MammalEnum.Gorilla;
+
 
 	public void ChestDrum()
 	{

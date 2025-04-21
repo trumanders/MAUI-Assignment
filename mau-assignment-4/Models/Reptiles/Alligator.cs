@@ -3,6 +3,8 @@
 public class Alligator : Reptile
 {
 	public int? JawStrengthPSI { get; set; }
+	public new ReptileEnum? Species { get; set; }
+
 
 	public void Float()
 	{

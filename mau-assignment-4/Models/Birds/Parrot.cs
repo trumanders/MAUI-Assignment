@@ -4,6 +4,8 @@ public class Parrot : Bird
 {
 	public int? VocabularySize { get; set; }
 	public bool IsTrainedForPerformance { get; set; }
+	public new BirdEnum? Species { get; set; }
+
 	public void Mimic()
 	{
 		throw new NotImplementedException();

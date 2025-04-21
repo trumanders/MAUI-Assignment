@@ -1,6 +1,6 @@
 ﻿namespace mau_assignment_4.Models.Reptiles;
 
-public abstract class Reptile : Animal
+public class Reptile : Animal
 {
 	public int? TypicalNumberOfEggsLaid { get; set; }
 	public void ShedSkin()

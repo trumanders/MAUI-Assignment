@@ -4,7 +4,9 @@ public class Dolphin : Mammal
 {
 	public int? JumpHeightInCentimeters { get; set; }
 	public bool HasUniqueMarkings { get; set; }
-	
+	public new MammalEnum? Species { get; set; }
+
+
 	public void Communicate()
 	{
 		throw new NotImplementedException();
