@@ -1,4 +1,5 @@
-﻿using mau_assignment_4.Pages;
+﻿using mau_assignment_4.Exceptions;
+using mau_assignment_4.Pages;
 namespace mau_assignment_4.PageModels;
 
 /// <summary>
@@ -12,6 +13,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 	private readonly IAnimalService _animalService;
 	private readonly IFoodScheduleService _foodScheduleService;
+	private readonly IAlertService _alertService;
 	private const int _maxNameLength = 40;
 	private string? _ageInYears;
 	private string? _armSpanInCentimeters;
@@ -703,13 +705,20 @@ public partial class MainPageModel : INotifyPropertyChanged
 	public ICommand OnMenuBarSaveClickedCommand { get; set; }
 	public ICommand OnMenuBarSaveAsTextFileClickedCommand { get; set; }
 	public ICommand OnMenuBarSaveAsJsonClickedCommand { get; set; }
+	public ICommand OnMenuBarOpenXmlClickedCommand { get; set; }
+	public ICommand OnMenuBarSaveXmlClickedCommand { get; set; }
+	public ICommand OnMenuBarSaveAsXmlClickedCommand { get; set; }
 	#endregion
 
 	#region Public methods
-	public MainPageModel(IAnimalService animalService, IFoodScheduleService foodScheduleService)
+	public MainPageModel(
+		IAnimalService animalService,
+		IFoodScheduleService foodScheduleService,
+		IAlertService alertService)
 	{
 		_animalService = animalService;
 		_foodScheduleService = foodScheduleService;
+		_alertService = alertService;
 		InitializeMessagingCenter();
 		InitializeCommands();
 	}
@@ -1139,12 +1148,26 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 		OnMenuBarOpenClickedCommand = new Command(async () =>
 		{
-			await ((AnimalService)_animalService).OpenFromJson();
+			try
+			{
+				await ((AnimalService)_animalService).OpenJson();
+			}
+			catch (Exception ex)
+			{
+				_alertService.ShowSomethingWentWrongAlert(ex.Message);
+			}
 		});
 		
 		OnMenuBarSaveClickedCommand = new Command(async () =>
 		{
-			await ((AnimalService)_animalService).SaveJson();
+			try
+			{
+				await ((AnimalService)_animalService).SaveJson();
+			}
+			catch (Exception ex)
+			{
+				await _alertService.ShowSomethingWentWrongAlert(ex.Message);
+			}
 		});
 		
 		OnMenuBarSaveAsTextFileClickedCommand = new Command(async () =>
@@ -1153,7 +1176,50 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 		OnMenuBarSaveAsJsonClickedCommand = new Command(async () =>
 		{
-			await((AnimalService)_animalService).SaveAsJson();
+			try
+			{
+				await ((AnimalService)_animalService).SaveAsJson();
+			}
+			catch (Exception ex)
+			{
+				await _alertService.ShowSomethingWentWrongAlert(ex.Message);
+			}
+		});
+
+		OnMenuBarOpenXmlClickedCommand = new Command(async () =>
+		{
+			try
+			{
+				await ((FoodScheduleService)_foodScheduleService).OpenXml();
+			}
+			catch (InvalidFoodScheduleXmlException ex)
+			{
+				await _alertService.ShowInvalidFoodScheduleXmlAlert(ex.Message);
+			}
+		});
+
+		OnMenuBarSaveXmlClickedCommand = new Command(async () =>
+		{
+			try
+			{
+				await ((FoodScheduleService)_foodScheduleService).SaveXml();
+			}
+			catch (Exception ex)
+			{
+				await _alertService.ShowAlert("Something went wrong", "Error:" + ex.Message, "Ok");
+			}
+		});
+
+		OnMenuBarSaveAsXmlClickedCommand = new Command(async () =>
+		{
+			try
+			{
+				await ((FoodScheduleService)_foodScheduleService).SaveAsXml();
+			}
+			catch (Exception ex)
+			{
+				_alertService.ShowSomethingWentWrongAlert(ex.Message);
+			}
 		});
 	}
 

@@ -32,6 +32,16 @@ class AlertService : IAlertService
 		return ShowAlert("No item selected", "Please select an item.", "OK");
 	}
 
+	public Task ShowInvalidFoodScheduleXmlAlert(string message)
+	{
+		return ShowAlert("Invalid food schedule xml file!", message, "Ok");
+	}
+
+	public Task ShowSomethingWentWrongAlert(string message)
+	{
+		return ShowAlert("Something went wrong", "Error: " + message, "Ok");
+	}
+
 	/// <summary>
 	/// Displays an alert based on the title, message and close button text provided
 	/// </summary>

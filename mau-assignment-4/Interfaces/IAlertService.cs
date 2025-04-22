@@ -8,4 +8,6 @@ public interface IAlertService
 	public Task ShowDeleteErrorAlert();
 	public Task ShowSuccessfulEditAlert();
 	public Task ShowNoItemSelectedAlert();
+	public Task ShowInvalidFoodScheduleXmlAlert(string message);
+	public Task ShowSomethingWentWrongAlert(string message);
 }

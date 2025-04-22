@@ -22,13 +22,18 @@
 	</ContentPage.Resources>
 	<ContentPage.MenuBarItems>
 		<MenuBarItem Text="File">
-			<MenuFlyoutItem Clicked="OnMenuBarNewClicked" Text="New" />
-			<MenuFlyoutItem Clicked="OnMenuBarOpenClicked" Text="Open" />
-			<MenuFlyoutItem Clicked="OnMenuBarSaveClicked" Text="Save" />
-			<MenuFlyoutSubItem Text="Save as ...">
+			<MenuFlyoutItem Clicked="OnMenuBarNewClicked" Text="New animal collection" />
+			<MenuFlyoutItem Clicked="OnMenuBarOpenClicked" Text="Open animal collection ..." />
+			<MenuFlyoutItem Clicked="OnMenuBarSaveClicked" Text="Save animal collection" />
+			<MenuFlyoutSubItem Text="Save animal collection as ...">
 				<MenuFlyoutItem Clicked="OnMenuBarSaveAsTextFileClicked" Text="Text file" />
 				<MenuFlyoutItem Clicked="OnMenuBarSaveAsJsonClicked" Text="Json" />
 			</MenuFlyoutSubItem>
+			<MenuFlyoutItem IsEnabled="False" Text="────────────────" />
+
+			<MenuFlyoutItem Clicked="OnMenuBarOpenXmlClicked" Text="Open food schedule ..." />
+			<MenuFlyoutItem Clicked="OnMenuBarSaveXmlClicked" Text="Save food schedule" />
+			<MenuFlyoutItem Clicked="OnMenuBarSaveAsXmlClicked" Text="Save food schedule as XML ..." />
 		</MenuBarItem>
 	</ContentPage.MenuBarItems>
 	<Grid>

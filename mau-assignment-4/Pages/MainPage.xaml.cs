@@ -87,4 +87,19 @@ public partial class MainPage : ContentPage
 	{
 		_pageModel.OnMenuBarSaveAsJsonClickedCommand.Execute(e);
 	}
+
+	private void OnMenuBarOpenXmlClicked(object sender, EventArgs e)
+	{
+		_pageModel.OnMenuBarOpenXmlClickedCommand.Execute(e);
+	}
+
+	private void OnMenuBarSaveXmlClicked(object sender, EventArgs e)
+	{
+		_pageModel.OnMenuBarSaveXmlClickedCommand.Execute(e);
+	}
+
+	private void OnMenuBarSaveAsXmlClicked(object sender, EventArgs e)
+	{
+		_pageModel.OnMenuBarSaveAsXmlClickedCommand.Execute(e);
+	}
 }

@@ -11,7 +11,7 @@ public class FoodScheduleService : ListService<FoodSchedule>, IFoodScheduleServi
 	/// Initializes the food schedules for various animals.
 	/// </summary>
 	private void InitializeFoodSchedules()
-	{
+	{		
 		Add(new FoodSchedule()
 		{
 			Name = "Komodo",
