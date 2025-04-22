@@ -10,6 +10,8 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 	private ObservableCollection<T> _items = [];
 	private JsonSerializerOptions _options = new();
 
+	public static string SaveLocation { get; set; }
+
 	public int Count
 	{
 		get => throw new NotImplementedException();
@@ -91,6 +93,31 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 		throw new NotImplementedException();
 	}
 
+	public async Task SaveJson()
+	{
+		if (string.IsNullOrEmpty(SaveLocation))
+		{
+			SaveAsJson();
+		}
+		else
+		{
+			var options = new JsonSerializerOptions
+			{
+				WriteIndented = true
+			};
+			options.Converters.Add(new AnimalJsonConverter());
+
+
+			using var stream = new FileStream(
+				SaveLocation,
+				FileMode.Create,
+				FileAccess.Write);
+
+			await JsonSerializer.SerializeAsync(stream, _items, options);
+		}
+	}
+
+
 	public async Task SaveAsJson()
 	{
 		var options = new JsonSerializerOptions()
@@ -102,9 +129,11 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 		using var stream = new MemoryStream();
 
 		await JsonSerializer.SerializeAsync(stream, _items, options);
+
 		stream.Position = 0;
 
 		var result = await FileSaver.SaveAsync("My animals.json", stream, CancellationToken.None);
+		SaveLocation = result.FilePath;
 
 		if (result.IsSuccessful)
 		{
@@ -135,7 +164,7 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 			using var stream = await result.OpenReadAsync();
 			_options = new JsonSerializerOptions();
 			_options.Converters.Add(new AnimalJsonConverter());
-			var animals = await JsonSerializer.DeserializeAsync(stream,typeof(List<T>), _options);
+			var animals = await JsonSerializer.DeserializeAsync(stream, typeof(List<T>), _options);
 			if (animals is List<T> animalCollection)
 			{
 				_items.Clear();
@@ -143,6 +172,8 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 					_items.Add(item);
 			}
 		}
+		if (result != null)
+			SaveLocation = result.FullPath;
 	}
 
 	public bool XMLSeralize(string fileName)

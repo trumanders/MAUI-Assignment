@@ -4,7 +4,7 @@ public class Parrot : Bird
 {
 	public int? VocabularySize { get; set; }
 	public bool IsTrainedForPerformance { get; set; }
-	public new BirdEnum? Species { get; set; }
+	public new BirdEnum Species { get; } = BirdEnum.Parrot;
 
 	public void Mimic()
 	{

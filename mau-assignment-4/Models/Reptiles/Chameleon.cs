@@ -4,7 +4,7 @@ public class Chameleon : Reptile
 {
 	public int? TongueLengthInMillimeters { get; set; }
 	public bool HasRegrownTail { get; set; }
-	public new ReptileEnum? Species { get; set; }
+	public new ReptileEnum Species { get; } = ReptileEnum.Chameleon;
 
 
 	public void Camouflage()

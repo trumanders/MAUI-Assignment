@@ -703,9 +703,6 @@ public partial class MainPageModel : INotifyPropertyChanged
 	public ICommand OnMenuBarSaveClickedCommand { get; set; }
 	public ICommand OnMenuBarSaveAsTextFileClickedCommand { get; set; }
 	public ICommand OnMenuBarSaveAsJsonClickedCommand { get; set; }
-
-
-
 	#endregion
 
 	#region Public methods
@@ -1137,6 +1134,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 			ClearAnimalCollection();
 			ClearFoodScheduleCollection();
 			ClearUI();
+			AnimalService.SaveLocation = null;
 		});
 
 		OnMenuBarOpenClickedCommand = new Command(async () =>
@@ -1144,9 +1142,9 @@ public partial class MainPageModel : INotifyPropertyChanged
 			await ((AnimalService)_animalService).OpenFromJson();
 		});
 		
-		OnMenuBarSaveClickedCommand = new Command(() =>
+		OnMenuBarSaveClickedCommand = new Command(async () =>
 		{
-
+			await ((AnimalService)_animalService).SaveJson();
 		});
 		
 		OnMenuBarSaveAsTextFileClickedCommand = new Command(async () =>
@@ -1156,7 +1154,6 @@ public partial class MainPageModel : INotifyPropertyChanged
 		OnMenuBarSaveAsJsonClickedCommand = new Command(async () =>
 		{
 			await((AnimalService)_animalService).SaveAsJson();
-
 		});
 	}
 

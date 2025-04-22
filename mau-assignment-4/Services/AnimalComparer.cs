@@ -15,7 +15,7 @@ public class AnimalComparer(SortOption sortOption, bool isReverseOrder) : ICompa
 		int result = _sortOption switch
 		{
 			SortOption.Name => string.Compare(a?.PersonalName, b?.PersonalName, StringComparison.Ordinal),
-			SortOption.Species => string.Compare(a?.Species.ToString(), b?.Species.ToString(), StringComparison.Ordinal),
+			SortOption.Species => string.Compare(a?.Species?.ToString(), b?.Species?.ToString(), StringComparison.Ordinal),
 			_ => 0
 		};
 

@@ -75,7 +75,6 @@ public class AnimalService(
 	/// <returns></returns>
 	public bool Edit(Animal animal, MainPageModel pageModel)
 	{
-		bool success = true;
 		if (!ValidateProperties(pageModel))
 			return false;
 

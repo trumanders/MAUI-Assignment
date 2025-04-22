@@ -33,7 +33,7 @@ public class PropertyValidator : IPropertyValidator
 			switch (property.Name)
 			{
 				case nameof(pageModel.SelectedSpecies):
-					ValidateSpecies(value);
+					ValidateSpecies(value!);
 					break;
 
 				case nameof(pageModel.AgeInYears):
@@ -89,7 +89,7 @@ public class PropertyValidator : IPropertyValidator
 					break;
 
 				case nameof(pageModel.PersonalName):
-					ValidateName(value);
+					ValidateName(value!);
 					break;
 
 				default:

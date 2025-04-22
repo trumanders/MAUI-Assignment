@@ -4,7 +4,7 @@ public class Dolphin : Mammal
 {
 	public int? JumpHeightInCentimeters { get; set; }
 	public bool HasUniqueMarkings { get; set; }
-	public new MammalEnum? Species { get; set; }
+	public new MammalEnum Species { get; } = MammalEnum.Dolphin;
 
 
 	public void Communicate()
