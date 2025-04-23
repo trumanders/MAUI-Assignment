@@ -1,6 +1,6 @@
 ﻿namespace mau_assignment_4.Models;
 
-public class Animal : IAnimal
+public class Animal
 {
 	private static int _id = 0;
 	public int Id { get; set; }

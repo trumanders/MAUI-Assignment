@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using mau_assignment_4.Exceptions;
 using mau_assignment_4.JsonConverters;
-using System.Xml;
 using System.Xml.Serialization;
 
 
@@ -11,9 +10,8 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 {
 	[ObservableProperty]
 	private ObservableCollection<T> _items = [];
-	private JsonSerializerOptions _options = new();
 
-	public static string SaveLocation { get; set; }
+	public static string? SaveLocation { get; set; }
 
 	public int Count
 	{
@@ -78,19 +76,18 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 	}
 
 	public async Task SaveJson()
-	{
+	{	
 		if (string.IsNullOrEmpty(SaveLocation))
 		{
-			SaveAsJson();
+			await SaveAsJson();
 		}
 		else
 		{
 			var options = new JsonSerializerOptions
 			{
-				WriteIndented = true
-			};
-			options.Converters.Add(new AnimalJsonConverter());
-
+				WriteIndented = true,
+				Converters = { new AnimalJsonConverter() }
+			};		
 
 			using var stream = new FileStream(
 				SaveLocation,
@@ -101,17 +98,16 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 		}
 	}
 
-
 	public async Task SaveAsJson()
 	{
 		if (typeof(T) != typeof(Animal))
 			return;
 
-		var options = new JsonSerializerOptions()
+		var options = new JsonSerializerOptions
 		{
-			WriteIndented = true
+			WriteIndented = true,
+			Converters = { new AnimalJsonConverter() }
 		};
-		options.Converters.Add(new AnimalJsonConverter());
 
 		using var stream = new MemoryStream();
 
@@ -124,11 +120,11 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 
 		if (result.IsSuccessful)
 		{
-			new AlertService().ShowAlert("Animals saved", "Animal collection successfully saved!", "Ok");
+			await new AlertService().ShowAlert("Animals saved", "Animal collection successfully saved!", "Ok");
 		}
 		else
 		{
-			new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
+			await new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
 		}
 	}
 
@@ -152,9 +148,12 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 		if (result != null)
 		{
 			using var stream = await result.OpenReadAsync();
-			_options = new JsonSerializerOptions();
-			_options.Converters.Add(new AnimalJsonConverter());
-			var animals = await JsonSerializer.DeserializeAsync(stream, typeof(List<T>), _options);
+			var options = new JsonSerializerOptions()
+			{
+				Converters = { new AnimalJsonConverter() }
+			};
+
+			var animals = await JsonSerializer.DeserializeAsync(stream, typeof(List<T>), options);
 			if (animals is List<T> animalCollection)
 			{
 				Items.Clear();
@@ -185,34 +184,22 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 				})
 			});
 
-			if (result != null)
-			{
-				using var stream = await result.OpenReadAsync();
-				var serializer = new XmlSerializer(typeof(List<FoodSchedule>));
+			if (result == null) return;
 
-				try
-				{
-					if (serializer.Deserialize(stream) is List<FoodSchedule> schedules)
-					{
-						Items.Clear();
-						foreach (var item in schedules.Cast<T>())
-							Items.Add(item);
-					}
-					SaveLocation = result.FullPath;
-				}
-				catch (InvalidFoodScheduleXmlException ex)
-				{
-					throw ex;
-				}
-				catch (Exception ex)
-				{
-					throw new InvalidFoodScheduleXmlException(SaveLocation, "Error while reading food schedule xml file.", ex);
-				}				
+			SaveLocation = result.FullPath;
+			using var stream = await result.OpenReadAsync();
+			var serializer = new XmlSerializer(typeof(List<FoodSchedule>));
+
+			if (serializer.Deserialize(stream) is List<FoodSchedule> schedules)
+			{
+				Items.Clear();
+				foreach (var item in schedules.Cast<T>())
+					Items.Add(item);
 			}
 		}
 		catch (InvalidFoodScheduleXmlException ex)
 		{
-			throw ex;
+			throw new InvalidFoodScheduleXmlException(SaveLocation!, "Error while reading food schedule xml file.", ex);
 		}
 	}
 
@@ -254,11 +241,11 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 
 		if (result.IsSuccessful)
 		{
-			new AlertService().ShowAlert("Food schedules saved", "Food schedules successfully saved!", "Ok");
+			await new AlertService().ShowAlert("Food schedules saved", "Food schedules successfully saved!", "Ok");
 		}
 		else
 		{
-			new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
+			await new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
 		}
 	}
 }

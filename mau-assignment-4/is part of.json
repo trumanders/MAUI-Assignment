@@ -75,10 +75,10 @@
   },
   {
     "Type": "Komodo",
-    "IsPartOfBreedingProgram": false,
+    "IsPartOfBreedingProgram": true,
     "Species": 2,
     "TypicalNumberOfEggsLaid": 200,
-    "Id": 24,
+    "Id": 27,
     "PersonalName": "Modo Kodo",
     "AgeInYears": 45,
     "Gender": 0,

@@ -6,7 +6,7 @@
 public partial class FoodSchedulePageModel : INotifyPropertyChanged
 {
 	private readonly FoodSchedule _foodSchedule;
-	private TaskCompletionSource<bool> _taskCompletionSource;
+	private TaskCompletionSource<bool>? _taskCompletionSource;
 
 	private string? _foodScheduleName;
 	private string? _selectedScheduleEvent;
@@ -148,16 +148,16 @@ public partial class FoodSchedulePageModel : INotifyPropertyChanged
 		MapSelectedFoodScheduleToUI();
 	}
 
-	public ICommand OnAddButtonClickCommand { get; set; }
-	public ICommand OnChangeButtonClickCommand { get; set; }
-	public ICommand OnDeleteButtonClickCommand { get; set; }
-	public ICommand OnSaveButtonClickCommand { get; set; }
+	public ICommand? OnAddButtonClickCommand { get; set; }
+	public ICommand? OnChangeButtonClickCommand { get; set; }
+	public ICommand? OnDeleteButtonClickCommand { get; set; }
+	public ICommand? OnSaveButtonClickCommand { get; set; }
 
 
-	public ICommand OnEventListItemClickedCommand { get; set; }
-	public ICommand OnEventEntryChangedCommand { get; set; }
-	public ICommand OnNameEntryChangedCommand { get; set; }
-	public ICommand OnFoodScheduleItemClickCommand { get; set; }
+	public ICommand? OnEventListItemClickedCommand { get; set; }
+	public ICommand? OnEventEntryChangedCommand { get; set; }
+	public ICommand? OnNameEntryChangedCommand { get; set; }
+	public ICommand? OnFoodScheduleItemClickCommand { get; set; }
 
 	public Task<bool> ShowDialogueAsync()
 	{
@@ -242,13 +242,16 @@ public partial class FoodSchedulePageModel : INotifyPropertyChanged
 		// to the new schedule event entered in the schedule event entry.
 		OnChangeButtonClickCommand = new Command(() =>
 		{
-			if (IsChangeButtonEnabled && !string.IsNullOrEmpty(ScheduleEvent) && FoodScheduleEvents.IndexOf(SelectedScheduleEvent) >= 0)
+			if (IsChangeButtonEnabled)
 			{
-				FoodScheduleEvents[FoodScheduleEvents.IndexOf(SelectedScheduleEvent!)] = ScheduleEvent;
-				IsDeleteButtonEnabled = false;
-				IsAddButtonEnabled = false;
-				IsChangeButtonEnabled = false;
-				IsSaveButtonEnabled = true;
+				if (!string.IsNullOrEmpty(ScheduleEvent) && FoodScheduleEvents.IndexOf(SelectedScheduleEvent!) >= 0)
+				{
+					FoodScheduleEvents[FoodScheduleEvents.IndexOf(SelectedScheduleEvent!)] = ScheduleEvent;
+					IsDeleteButtonEnabled = false;
+					IsAddButtonEnabled = false;
+					IsChangeButtonEnabled = false;
+					IsSaveButtonEnabled = true;
+				}
 			}
 		});
 
@@ -261,7 +264,7 @@ public partial class FoodSchedulePageModel : INotifyPropertyChanged
 
 		// When the save button is clicked, if the button is enabled, set the the food schedeule object's name and
 		// list of schedule events to the values in the UI, and send the appropriate message to the messenger with the food schedule object.
-		OnSaveButtonClickCommand = new Command(async () =>
+		OnSaveButtonClickCommand = new Command(() =>
 		{
 			if (IsSaveButtonEnabled)
 			{

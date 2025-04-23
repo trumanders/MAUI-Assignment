@@ -2,20 +2,19 @@
 
 public partial class MainPage : ContentPage
 {
+
+	private readonly MainPageModel _pageModel;
+
 	/// <summary>
 	/// Initializes the main page, sets the binding context to the provided <paramref name="pageModel"/>.
 	/// Adjusts the window size.
 	/// </summary>
 	/// <param name="pageModel">The model containing the data to bind to the page.</param>
-
-	private readonly MainPageModel _pageModel;
-	private readonly IFileSaver _fileSaver;
-	public MainPage(MainPageModel pageModel, IFileSaver fileSaver)
+	public MainPage(MainPageModel pageModel)
 	{
 		InitializeComponent();
 		_pageModel = pageModel;
 		this.BindingContext = _pageModel;
-		_fileSaver = fileSaver;
 
 		if (DeviceInfo.Platform == DevicePlatform.WinUI)
 		{
@@ -26,8 +25,6 @@ public partial class MainPage : ContentPage
 				window.Height = 1000;
 			}
 		}
-
-		_fileSaver = fileSaver;
 	}
 
 	/// <summary>
@@ -37,7 +34,7 @@ public partial class MainPage : ContentPage
 	private void OnEntryTextChanged(object sender, TextChangedEventArgs e)
 	{
 
-		_pageModel.OnTextChangedCommand.Execute((sender, e));		
+		_pageModel.OnTextChangedCommand?.Execute((sender, e));		
 	}
 
 	/// <summary>
@@ -50,7 +47,7 @@ public partial class MainPage : ContentPage
 	/// <param name="e">The selected item</param>
 	private void OnAnimalItemClick(object sender, ItemTappedEventArgs e)
 	{
-		_pageModel.OnAnimalItemClickCommand.Execute(e.Item);		
+		_pageModel.OnAnimalItemClickCommand?.Execute(e.Item);		
 	}
 
 	/// <summary>
@@ -60,46 +57,46 @@ public partial class MainPage : ContentPage
 	/// <param name="e"></param>
 	private void OnFoodScheduleItemClicked(object sender, ItemTappedEventArgs e)
 	{
-		_pageModel.OnFoodScheduleItemClickedCommand.Execute(e);
+		_pageModel.OnFoodScheduleItemClickedCommand?.Execute(e);
 	}
 
 	private void OnMenuBarNewClicked(object sender, EventArgs e)
 	{
-		_pageModel.OnMenuBarNewClickedCommand.Execute(e);
+		_pageModel.OnMenuBarNewClickedCommand?.Execute(e);
 	}
 
 	private void OnMenuBarOpenClicked(object sender, EventArgs e)
 	{
-		_pageModel.OnMenuBarOpenClickedCommand.Execute(e);
+		_pageModel.OnMenuBarOpenClickedCommand?.Execute(e);
 	}
 
 	private void OnMenuBarSaveClicked(object sender, EventArgs e)
 	{
-		_pageModel.OnMenuBarSaveClickedCommand.Execute(e);
+		_pageModel.OnMenuBarSaveClickedCommand?.Execute(e);
 	}
 
 	private void OnMenuBarSaveAsTextFileClicked(object sender, EventArgs e)
 	{
-		_pageModel.OnMenuBarSaveAsTextFileClickedCommand.Execute(e);
+		_pageModel.OnMenuBarSaveAsTextFileClickedCommand?.Execute(e);
 	}
 	
 	private void OnMenuBarSaveAsJsonClicked(object sender, EventArgs e)
 	{
-		_pageModel.OnMenuBarSaveAsJsonClickedCommand.Execute(e);
+		_pageModel.OnMenuBarSaveAsJsonClickedCommand?.Execute(e);
 	}
 
 	private void OnMenuBarOpenXmlClicked(object sender, EventArgs e)
 	{
-		_pageModel.OnMenuBarOpenXmlClickedCommand.Execute(e);
+		_pageModel.OnMenuBarOpenXmlClickedCommand?.Execute(e);
 	}
 
 	private void OnMenuBarSaveXmlClicked(object sender, EventArgs e)
 	{
-		_pageModel.OnMenuBarSaveXmlClickedCommand.Execute(e);
+		_pageModel.OnMenuBarSaveXmlClickedCommand?.Execute(e);
 	}
 
 	private void OnMenuBarSaveAsXmlClicked(object sender, EventArgs e)
 	{
-		_pageModel.OnMenuBarSaveAsXmlClickedCommand.Execute(e);
+		_pageModel.OnMenuBarSaveAsXmlClickedCommand?.Execute(e);
 	}
 }

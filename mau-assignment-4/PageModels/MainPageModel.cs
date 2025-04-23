@@ -60,9 +60,9 @@ public partial class MainPageModel : INotifyPropertyChanged
 	private Enum? _selectedSpecies;
 	private Animal? _selectedAnimal;
 	private Animal? _initialSelectedAnimal;
-	private FoodSchedulePage _foodSchedulePage;
-	private FoodSchedule _selectedFoodSchedule;
-	private FoodSchedule _addedFoodSchedule;
+	private FoodSchedulePage? _foodSchedulePage;
+	private FoodSchedule? _selectedFoodSchedule;
+	private FoodSchedule? _addedFoodSchedule;
 
 
 	#endregion
@@ -598,9 +598,9 @@ public partial class MainPageModel : INotifyPropertyChanged
 			}
 		}
 	}
-	public FoodSchedule AddedFoodSchedule
+	public FoodSchedule? AddedFoodSchedule
 	{
-		get => _addedFoodSchedule;
+		get => _addedFoodSchedule!;
 		set
 		{
 			if (_addedFoodSchedule != value)
@@ -617,15 +617,14 @@ public partial class MainPageModel : INotifyPropertyChanged
 	}
 
 
-	public FoodSchedule SelectedFoodSchedule
+	public FoodSchedule? SelectedFoodSchedule
 	{
-		get => _selectedFoodSchedule;
+		get => _selectedFoodSchedule!;
 		set
 		{
 			if (_selectedFoodSchedule != value)
 			{
 				_selectedFoodSchedule = value;
-				//OnPropertyChanged(nameof(SelectedFoodSchedule));
 			}
 			IsEditFoodScheduleButtonEnabled = _selectedFoodSchedule != null;
 		}
@@ -676,14 +675,15 @@ public partial class MainPageModel : INotifyPropertyChanged
 	}
 	public IReadOnlyList<Gender> Genders => Enum.GetValues<Gender>();
 	public IReadOnlyList<Category> Categories => Enum.GetValues<Category>();
-	public IReadOnlyList<Enum> BirdSpecies => Enum.GetValues<BirdEnum>().Cast<Enum>().ToList();
-	public IReadOnlyList<Enum> MammalSpecies => Enum.GetValues<MammalEnum>().Cast<Enum>().ToList();
-	public IReadOnlyList<Enum> ReptileSpecies => Enum.GetValues<ReptileEnum>().Cast<Enum>().ToList();
-	public IReadOnlyList<Enum> MigratoryPatterns => Enum.GetValues<MigratoryPattern>().Cast<Enum>().ToList();
+	public IReadOnlyList<Enum> BirdSpecies => [.. Enum.GetValues<BirdEnum>().Cast<Enum>()];
+	public IReadOnlyList<Enum> MammalSpecies => [.. Enum.GetValues<MammalEnum>().Cast<Enum>()];
+	public IReadOnlyList<Enum> ReptileSpecies => [.. Enum.GetValues<ReptileEnum>().Cast<Enum>()];
+	public IReadOnlyList<Enum> MigratoryPatterns => [.. Enum.GetValues<MigratoryPattern>().Cast<Enum>()];
 	public event PropertyChangedEventHandler? PropertyChanged;
 	#endregion
 
 	#region Commands
+	#nullable disable
 	public ICommand OnAddAnimalClickCommand { get; set; }
 	public ICommand OnSelectImageClickCommand { get; set; }
 	public ICommand OnRemoveImageClickCommand { get; set; }
@@ -708,6 +708,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 	public ICommand OnMenuBarOpenXmlClickedCommand { get; set; }
 	public ICommand OnMenuBarSaveXmlClickedCommand { get; set; }
 	public ICommand OnMenuBarSaveAsXmlClickedCommand { get; set; }
+	#nullable restore
 	#endregion
 
 	#region Public methods
@@ -726,10 +727,12 @@ public partial class MainPageModel : INotifyPropertyChanged
 	/// <summary>
 	/// Sets all Animal properties in the UI based on the passed in animal instance.
 	/// </summary>
-	/// <param name="animal">The object to map from, to the UI</param>
 	public void PopulateGUIFromSelectedAnimal()
 	{
-		PersonalName = SelectedAnimal.PersonalName;
+		if (SelectedAnimal == null)
+			return;
+		
+		PersonalName = SelectedAnimal.PersonalName ?? string.Empty;
 		AgeInYears = SelectedAnimal.AgeInYears.ToString();
 		Gender = SelectedAnimal.Gender;
 		IsVenomous = SelectedAnimal.IsVenomous;
@@ -847,15 +850,13 @@ public partial class MainPageModel : INotifyPropertyChanged
 	}
 
 	public void UpdateAddedFoodSchedule()
-	{
-		
+	{		
 		AddedFoodSchedule = SelectedFoodSchedule;
 	}
 
 	/// <summary>
 	/// Sets an instance of Animal to the private field.
 	/// </summary>
-	/// <param name="initialSelectedAnimal">The instance of Animal to assign the private field to</param>
 	public void CreateAnimalSnapshot()
 	{
 		_initialSelectedAnimal = SelectedAnimal;
@@ -983,7 +984,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		{
 			if (_foodSchedulePage != null)
 			{
-				Application.Current.ActivateWindow(_foodSchedulePage.Window);
+				Application.Current?.ActivateWindow(_foodSchedulePage.Window);
 			}
 		});
 
@@ -1154,12 +1155,19 @@ public partial class MainPageModel : INotifyPropertyChanged
 			}
 			catch (Exception ex)
 			{
-				_alertService.ShowSomethingWentWrongAlert(ex.Message);
+				await _alertService.ShowSomethingWentWrongAlert(ex.Message);
 			}
 		});
 		
 		OnMenuBarSaveClickedCommand = new Command(async () =>
 		{
+			if (IsSaveChangesEnabled)
+			{
+				if (await _alertService.ShowAskSaveChangesBeforeSaveJson())
+				{
+					OnChangeAnimalClickCommand.Execute(null);
+				}
+			}
 			try
 			{
 				await ((AnimalService)_animalService).SaveJson();
@@ -1176,6 +1184,14 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 		OnMenuBarSaveAsJsonClickedCommand = new Command(async () =>
 		{
+			if (IsSaveChangesEnabled)
+			{
+				if (await _alertService.ShowAskSaveChangesBeforeSaveJson())
+				{
+					OnChangeAnimalClickCommand.Execute(null);
+				}
+			}
+
 			try
 			{
 				await ((AnimalService)_animalService).SaveAsJson();
@@ -1218,7 +1234,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 			}
 			catch (Exception ex)
 			{
-				_alertService.ShowSomethingWentWrongAlert(ex.Message);
+				await _alertService.ShowSomethingWentWrongAlert(ex.Message);
 			}
 		});
 	}
@@ -1230,7 +1246,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 	/// <param name="foodSchedulePageModel">The Page Mode associated with the Page.</param>
 	private void OpenFoodSchedulePage(FoodSchedulePageModel foodSchedulePageModel)
 	{
-		Application.Current.OpenWindow(new Window
+		Application.Current?.OpenWindow(new Window
 		{
 			Page = new FoodSchedulePage(foodSchedulePageModel, this),
 			Title = "Food Schedule",

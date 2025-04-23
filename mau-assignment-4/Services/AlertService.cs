@@ -42,6 +42,22 @@ class AlertService : IAlertService
 		return ShowAlert("Something went wrong", "Error: " + message, "Ok");
 	}
 
+	public Task<bool> ShowAskSaveChangesBeforeSaveJson()
+	{
+		var mainPage = Application.Current?.Windows[0].Page;
+
+		if (mainPage != null)
+		{
+			return mainPage.DisplayAlert(
+				"Update list?",
+				"You have unsaved changes. Do you want to inclide them in the list before saving to file?",
+				"Yes",
+				"No"
+			).ContinueWith(task => task.Result);
+		}
+		return Task.FromResult(false);
+	}
+
 	/// <summary>
 	/// Displays an alert based on the title, message and close button text provided
 	/// </summary>
@@ -49,8 +65,15 @@ class AlertService : IAlertService
 	/// <param name="message">The message of the alert</param>
 	/// <param name="closeButtonText">The text of the close button</param>
 	/// <returns></returns>
-	public Task ShowAlert(string title, string message, string closeButtonText)
+	public Task ShowAlert(string title, string? message, string closeButtonText)
 	{
-		return Application.Current.Windows[0].Page.DisplayAlert(title, message, closeButtonText);
+		var mainPage = Application.Current?.Windows[0].Page;
+
+		if (mainPage != null)
+		{
+			return mainPage.DisplayAlert(title, message, closeButtonText);
+		}
+
+		return Task.CompletedTask;
 	}
 }
