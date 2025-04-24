@@ -8,9 +8,11 @@ public interface IListService<T>
 	public bool ChangeAt(T type, int index); // mandatory
 	public bool CheckIndex(int index);
 	public bool DeleteAt(int index);
+	public void DeleteAll();
 	public Task SaveJson();
 	public Task SaveAsJson();
 	public Task OpenJson();
+	public Task SaveAsTextFile();
 	public Task SaveXml();
 	public Task SaveAsXml();
 	public Task OpenXml();

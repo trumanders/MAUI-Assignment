@@ -29,6 +29,6 @@ public class Penguin : Bird
 			$"{base.ToString()}" +
 			$"Diving depth: {(DivingDepthInMeters == null
 				? "" : (DivingDepthInMeters + (DivingDepthInMeters > 1 ? " meters" : " meter")))}\n" +
-			$"Egg incubation temperature: {(EggIncubationTemperature == null ? "" : EggIncubationTemperature + " celcius")}\n";
+			$"Is hand fed: {(IsHandFed ? "Yes" : "No")}\n";
 	}
 }

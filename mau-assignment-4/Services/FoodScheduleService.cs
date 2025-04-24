@@ -2,7 +2,7 @@
 
 public class FoodScheduleService : ListService<FoodSchedule>, IFoodScheduleService
 {
-	public FoodScheduleService()
+	public FoodScheduleService(ISaveSettings saveSettings) : base(saveSettings)
 	{
 		InitializeFoodSchedules();		
 	}

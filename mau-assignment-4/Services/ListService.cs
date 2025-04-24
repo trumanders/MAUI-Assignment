@@ -1,17 +1,23 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using mau_assignment_4.Exceptions;
 using mau_assignment_4.JsonConverters;
+using System.Diagnostics;
+using System.Text;
 using System.Xml.Serialization;
 
 
 namespace mau_assignment_4.Services;
 
-public partial class ListService<T> : ObservableObject, IListService<T>
+public partial class ListService<T>(ISaveSettings _saveSettings) : ObservableObject, IListService<T>
 {
 	[ObservableProperty]
 	private ObservableCollection<T> _items = [];
+	protected ISaveSettings SaveSettings
+	{
+		get => _saveSettings;
+	}
 
-	public static string? SaveLocation { get; set; }
+	public string? XmlSaveLocation { get; set; } = null;
 
 	public int Count
 	{
@@ -51,6 +57,17 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 	}
 
 	/// <summary>
+	/// Get an item in the list by index
+	/// </summary>
+	/// <param name="index">The index to get the item from</param>
+	/// <returns>The item at the specified item, or default if index does not exist</returns>
+	public T GetAt(int index) // Not needed
+	{
+		var item = CheckIndex(index) ? Items[index] : default;
+		return item!;
+	}
+
+	/// <summary>
 	/// Checks if the index is valid for the Items collection.
 	/// </summary>
 	/// <param name="index">The index being checked</param>
@@ -75,33 +92,37 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 		return true;
 	}
 
+	public void DeleteAll()
+	{
+		Items.Clear();
+	}
+	public string[] ToStringArray()
+	{
+		return [.. Items.Select(x => x?.ToString() ?? string.Empty)];
+	}
+
 	public async Task SaveJson()
-	{	
-		if (string.IsNullOrEmpty(SaveLocation))
+	{
+		var options = new JsonSerializerOptions
 		{
-			await SaveAsJson();
-		}
-		else
-		{
-			var options = new JsonSerializerOptions
-			{
-				WriteIndented = true,
-				Converters = { new AnimalJsonConverter() }
-			};		
+			WriteIndented = true,
+			Converters = { new AnimalJsonConverter() }
+		};
 
-			using var stream = new FileStream(
-				SaveLocation,
-				FileMode.Create,
-				FileAccess.Write);
+		using var stream = new FileStream(
+			_saveSettings.SaveLocation,
+			FileMode.Create,
+			FileAccess.Write);
 
-			await JsonSerializer.SerializeAsync(stream, Items, options);
-		}
+		await JsonSerializer.SerializeAsync(stream, Items, options);
 	}
 
 	public async Task SaveAsJson()
 	{
 		if (typeof(T) != typeof(Animal))
 			return;
+
+		_saveSettings.SaveFileFormat = SaveFileFormat.Json;
 
 		var options = new JsonSerializerOptions
 		{
@@ -116,7 +137,7 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 		stream.Position = 0;
 
 		var result = await FileSaver.SaveAsync("My animals.json", stream, CancellationToken.None);
-		SaveLocation = result.FilePath;
+		_saveSettings.SaveLocation = result.FilePath;
 
 		if (result.IsSuccessful)
 		{
@@ -162,8 +183,27 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 			}
 		}
 		if (result != null)
-			SaveLocation = result.FullPath;
+			_saveSettings.SaveLocation = result.FullPath;
 	}
+
+	public async Task SaveAsTextFile()
+	{		
+		var fileSaver = FileSaver.Default;
+		var text = string.Join(Environment.NewLine, ToStringArray());
+		var bytes = Encoding.UTF8.GetBytes(text);
+		using var stream = new MemoryStream(bytes);
+		var result = await fileSaver.SaveAsync("All animals demo.txt", stream, new CancellationToken());
+		if (!result.IsSuccessful)
+			return;
+
+		_saveSettings.SaveFileFormat = SaveFileFormat.Txt;
+		_saveSettings.SaveLocation = result.FilePath;
+	}
+
+	//public Task SaveTextFile()
+	//{
+	//	var 
+	//}
 
 	public async Task OpenXml()
 	{
@@ -186,7 +226,7 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 
 			if (result == null) return;
 
-			SaveLocation = result.FullPath;
+			XmlSaveLocation = result.FullPath;
 			using var stream = await result.OpenReadAsync();
 			var serializer = new XmlSerializer(typeof(List<FoodSchedule>));
 
@@ -199,7 +239,7 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 		}
 		catch (InvalidFoodScheduleXmlException ex)
 		{
-			throw new InvalidFoodScheduleXmlException(SaveLocation!, "Error while reading food schedule xml file.", ex);
+			throw new InvalidFoodScheduleXmlException(XmlSaveLocation!, "Error while reading food schedule xml file.", ex);
 		}
 	}
 
@@ -208,7 +248,7 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 		if (typeof(T) != typeof(FoodSchedule))
 			return;
 
-		if (string.IsNullOrEmpty(SaveLocation))
+		if (string.IsNullOrEmpty(XmlSaveLocation))
 		{
 			await SaveAsXml();
 		}
@@ -217,7 +257,7 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 			var serializer = new XmlSerializer(typeof(List<FoodSchedule>));
 
 			using var stream = new FileStream(
-				SaveLocation,
+				XmlSaveLocation,
 				FileMode.Create,
 				FileAccess.Write);
 
@@ -237,7 +277,7 @@ public partial class ListService<T> : ObservableObject, IListService<T>
 		stream.Position = 0;
 
 		var result = await FileSaver.SaveAsync("My food schedules.xml", stream, CancellationToken.None);
-		SaveLocation = result.FilePath;
+		XmlSaveLocation = result.FilePath;
 
 		if (result.IsSuccessful)
 		{

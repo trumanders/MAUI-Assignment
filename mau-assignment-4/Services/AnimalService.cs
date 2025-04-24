@@ -8,7 +8,8 @@ namespace mau_assignment_4.Services;
 // here keeps the AnimalService decoupled from the ListService.
 public class AnimalService(
 	IPropertyValidator _propertyValidator,
-	IAlertService _alertService) : ListService<Animal>, IAnimalService
+	IAlertService _alertService,
+	ISaveSettings saveSettings) : ListService<Animal>(saveSettings), IAnimalService
 {
 	#region Private fields
 	private static SortOption _previousSortOption;
@@ -20,6 +21,7 @@ public class AnimalService(
 	public Dictionary<Animal, FoodSchedule> AnimalFoodSchedules { get; set; } = [];
 
 	#region Public methods
+
 	/// <summary>
 	/// Adds a validated animal to the list of animals based on the data from the page model
 	/// </summary>
@@ -174,6 +176,26 @@ public class AnimalService(
 	public void ShowAnimalInfoStrings() =>
 		_alertService.ShowInfoStringsAlert(GetAnimalInfoStrings());
 
+	public async Task Save()
+	{
+		switch (SaveSettings.SaveFileFormat)
+		{
+			case SaveFileFormat.Json:
+				await SaveJson();
+				break;
+			case SaveFileFormat.Txt:
+				await SaveAsTextFile();
+				break;
+			case SaveFileFormat.None:
+				await _alertService.ShowAlert("No file to save", "Please choose File -> Save as Json / Text file first", "Ok");
+				break;
+			default:
+				throw new NotImplementedException("Unsupported file format");
+		}
+	}
+
+	#endregion
+
 	/// <summary>
 	/// Calls the IPropertyValidator.ValidateProperties method to validate the properties of
 	/// the MainPageModel instance.
@@ -189,7 +211,6 @@ public class AnimalService(
 		}
 		return true;
 	}
-	#endregion
 
 	/// <summary>
 	/// Gathers all animals' info from its ToString()-method and returns them as a string array

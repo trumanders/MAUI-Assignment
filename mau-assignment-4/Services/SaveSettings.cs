@@ -1,6 +1,7 @@
 ﻿namespace mau_assignment_4.Services;
 
-public class SaveSettings
+public class SaveSettings : ISaveSettings
 {
-	public static string SaveLocation { get; set; }
+	public string? SaveLocation { get; set; }
+	public SaveFileFormat SaveFileFormat { get; set; } = SaveFileFormat.None;
 }

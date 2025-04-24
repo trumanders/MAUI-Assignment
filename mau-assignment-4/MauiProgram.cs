@@ -23,6 +23,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<IFoodScheduleService, FoodScheduleService>();
 		builder.Services.AddTransient<IPropertyValidator, PropertyValidator>();
 		builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
+		builder.Services.AddTransient<ISaveSettings, SaveSettings>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

@@ -14,6 +14,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 	private readonly IAnimalService _animalService;
 	private readonly IFoodScheduleService _foodScheduleService;
 	private readonly IAlertService _alertService;
+
 	private const int _maxNameLength = 40;
 	private string? _ageInYears;
 	private string? _armSpanInCentimeters;
@@ -891,6 +892,9 @@ public partial class MainPageModel : INotifyPropertyChanged
 		_foodSchedulePage = null;
 	}
 
+	/// <summary>
+	/// Resets the UI, empties all fields and selections
+	/// </summary>
 	public void ClearUI()
 	{
 		HasPermanentInjury = false;
@@ -943,7 +947,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 	public void ClearAnimalCollection()
 	{
-		_animalService.Animals.Clear();
+		((AnimalService)_animalService).DeleteAll();
 	}
 
 	public void ClearFoodScheduleCollection()
@@ -954,12 +958,6 @@ public partial class MainPageModel : INotifyPropertyChanged
 	#endregion
 
 	#region Private methods
-
-	/// <summary>
-	/// Resets the UI, empties all fields and selections
-	/// </summary>
-
-
 	/// <summary>
 	/// Enables save changes based on wheter saving changes should be allowed,
 	/// and on whether the property is changed since it populated the UI.
@@ -1144,7 +1142,6 @@ public partial class MainPageModel : INotifyPropertyChanged
 			ClearAnimalCollection();
 			ClearFoodScheduleCollection();
 			ClearUI();
-			AnimalService.SaveLocation = null;
 		});
 
 		OnMenuBarOpenClickedCommand = new Command(async () =>
@@ -1170,7 +1167,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 			}
 			try
 			{
-				await ((AnimalService)_animalService).SaveJson();
+				await ((AnimalService)_animalService).Save();
 			}
 			catch (Exception ex)
 			{
@@ -1180,6 +1177,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		
 		OnMenuBarSaveAsTextFileClickedCommand = new Command(async () =>
 		{
+			await ((AnimalService)_animalService).SaveAsTextFile();
 		});
 
 		OnMenuBarSaveAsJsonClickedCommand = new Command(async () =>
