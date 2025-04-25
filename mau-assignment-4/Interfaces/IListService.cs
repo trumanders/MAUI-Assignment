@@ -4,8 +4,8 @@ public interface IListService<T>
 {
 	public ObservableCollection<T> Items { get; set; }
 	public int Count { get; set; }
-	public bool Add(T type); // mandatory
-	public bool ChangeAt(T type, int index); // mandatory
+	public bool Add(T type);
+	public bool ChangeAt(T type, int index);
 	public bool CheckIndex(int index);
 	public bool DeleteAt(int index);
 	public void DeleteAll();

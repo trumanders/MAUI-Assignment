@@ -972,7 +972,7 @@
 								FontSize="12"
 								HorizontalOptions="Center"
 								Text="Edit"
-								TextColor="{Binding IsEditButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
+								TextColor="{Binding IsEditFoodScheduleButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
 								VerticalOptions="Center" />
 						</Border>
 					</HorizontalStackLayout>

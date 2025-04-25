@@ -1,8 +1,4 @@
-﻿
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.Xml.Serialization;
-
-namespace mau_assignment_4.Models;
+﻿namespace mau_assignment_4.Models;
 
 [XmlRoot("FoodSchedules")]
 public partial class FoodSchedule : ObservableObject

@@ -2,7 +2,6 @@
 
 public class Eagle : Bird
 {
-
 	public int? TalonsLengthInMillimeters { get; set; }
 	public bool HasPermanentInjury { get; set; }
 	public new BirdEnum Species { get; } = BirdEnum.Eagle;
@@ -31,4 +30,3 @@ public class Eagle : Bird
 			$"Has permanent injury: {(HasPermanentInjury ? "Yes" : "No")}\n";
 	}
 }
-

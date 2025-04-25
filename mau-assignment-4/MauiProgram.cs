@@ -1,6 +1,4 @@
-﻿
-namespace mau_assignment_4;
-
+﻿namespace mau_assignment_4;
 
 public static class MauiProgram
 {

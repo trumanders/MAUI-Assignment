@@ -1,6 +1,4 @@
-﻿using mau_assignment_4.Exceptions;
-using mau_assignment_4.Pages;
-namespace mau_assignment_4.PageModels;
+﻿namespace mau_assignment_4.PageModels;
 
 /// <summary>
 /// This class represents data and logic for MainPage. It has logic that
@@ -20,7 +18,6 @@ public partial class MainPageModel : INotifyPropertyChanged
 	private string? _armSpanInCentimeters;
 	private string? _divingDepthInMeters;
 	private string? _eggIncubationTemperature;
-	private string? _foodSchedule;
 	private string? _jawStrengthPSI;
 	private string? _jumpingHeightInCentimeters;
 	private string? _lactationPeriodInWeeks;

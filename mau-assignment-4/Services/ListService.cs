@@ -1,12 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using mau_assignment_4.Exceptions;
-using mau_assignment_4.JsonConverters;
-using System.Diagnostics;
-using System.Text;
-using System.Xml.Serialization;
-
-
-namespace mau_assignment_4.Services;
+﻿namespace mau_assignment_4.Services;
 
 public partial class ListService<T>(ISaveSettings _saveSettings) : ObservableObject, IListService<T>
 {

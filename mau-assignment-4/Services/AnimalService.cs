@@ -1,6 +1,4 @@
-﻿using System.Xml.Serialization;
-
-namespace mau_assignment_4.Services;
+﻿namespace mau_assignment_4.Services;
 
 // I chose not to inherit from ListService, since the methods in AnimalService
 // have Animal specific logic, and since it creates an unnecessary 
