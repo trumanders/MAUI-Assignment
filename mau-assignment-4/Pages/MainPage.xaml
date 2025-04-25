@@ -841,7 +841,7 @@
 									VerticalOptions="Center" />
 							</Border>
 
-							<!--  Delete  -->
+							<!--  Delete animal  -->
 							<Border
 								Margin="0,0,0,0"
 								Padding="10"
@@ -855,6 +855,23 @@
 									FontSize="12"
 									HorizontalOptions="Center"
 									Text="Delete"
+									VerticalOptions="Center" />
+							</Border>
+
+							<!--  Button: Delete all animals  -->
+							<Border
+								Margin="0,0,0,0"
+								Padding="10"
+								BackgroundColor="AliceBlue"
+								Stroke="Black"
+								StrokeThickness="1">
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding OnDeleteAllAnimalsClickCommand}" />
+								</Border.GestureRecognizers>
+								<Label
+									FontSize="12"
+									HorizontalOptions="Center"
+									Text="Delete all"
 									VerticalOptions="Center" />
 							</Border>
 

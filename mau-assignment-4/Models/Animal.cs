@@ -31,9 +31,9 @@ public class Animal
 	public override string ToString()
 	{
 		return
-			$"{GetType().Name}\n" +
-			$"ID: { Id }\n" +
-			$"Personal name: {(PersonalName == null ? "" : PersonalName)}\n" +
+			$"Species: {GetType().Name}\n" +
+			$"Id: { Id }\n" +
+			$"Personal name: {(PersonalName ?? "")}\n" +
 			$"Age: {(AgeInYears == null ? "" : AgeInYears + " years")}\n" +
 			$"Gender: {Gender}\n" +
 			$"Venomous: {(IsVenomous ? "Yes" : "No")}\n" +

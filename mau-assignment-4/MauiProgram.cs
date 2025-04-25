@@ -18,9 +18,10 @@ public static class MauiProgram
 
 		builder.Services.AddTransient<MainPageModel>();
 		builder.Services.AddTransient<IAlertService, AlertService>();
-		builder.Services.AddTransient<IAnimalService, AnimalService>();
-		builder.Services.AddTransient(typeof(IListService<>), typeof(ListService<>));
+		builder.Services.AddTransient<IAnimalService, AnimalService>();		
 		builder.Services.AddTransient<IFoodScheduleService, FoodScheduleService>();
+		builder.Services.AddTransient<IListService<Animal>, ListService<Animal>>();
+		builder.Services.AddTransient<IListService<FoodSchedule>, ListService<FoodSchedule>>();
 		builder.Services.AddTransient<IPropertyValidator, PropertyValidator>();
 		builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
 		builder.Services.AddTransient<ISaveSettings, SaveSettings>();
