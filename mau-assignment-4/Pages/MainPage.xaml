@@ -686,6 +686,22 @@
 					<HorizontalStackLayout Spacing="7">
 						<Label FontAttributes="Bold" Text="Food Schedule: " />
 						<Label Text="{Binding AddedFoodScheduleName}" />
+						<Border
+							Margin="0,0,0,10"
+							Padding="8"
+							BackgroundColor="AliceBlue"
+							HeightRequest="40"
+							Stroke="Black"
+							StrokeThickness="1">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnRemoveAddedFoodScheduleClickCommand}"/>
+							</Border.GestureRecognizers>
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Remove food schedule"
+								VerticalOptions="Center" />
+						</Border>
 					</HorizontalStackLayout>
 					<ScrollView>
 						<Editor

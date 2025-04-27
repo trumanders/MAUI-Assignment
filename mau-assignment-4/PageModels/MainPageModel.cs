@@ -708,6 +708,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 	public ICommand OnMenuBarOpenXmlClickedCommand { get; set; }
 	public ICommand OnMenuBarSaveXmlClickedCommand { get; set; }
 	public ICommand OnMenuBarSaveAsXmlClickedCommand { get; set; }
+	public ICommand OnRemoveAddedFoodScheduleClickCommand { get; set; }
 	#nullable restore
 	#endregion
 
@@ -1231,6 +1232,14 @@ public partial class MainPageModel : INotifyPropertyChanged
 				await _alertService.ShowSomethingWentWrongAlert(ex.Message);
 			}
 		});
+
+		OnRemoveAddedFoodScheduleClickCommand = new Command(() =>
+		{
+			AddedFoodScheduleEvents = null;
+			IsSaveChangesEnabled = true;
+			
+		});
+
 	}
 
 	/// <summary>
