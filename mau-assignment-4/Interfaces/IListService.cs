@@ -9,11 +9,9 @@ public interface IListService<T>
 	public bool CheckIndex(int index);
 	public bool DeleteAt(int index);
 	public void DeleteAll();
-	public Task SaveJson();
+	public Task Open();
+	public Task Save();
 	public Task SaveAsJson();
-	public Task OpenJson();
 	public Task SaveAsTextFile();
-	public Task SaveXml();
 	public Task SaveAsXml();
-	public Task OpenXml();
 }

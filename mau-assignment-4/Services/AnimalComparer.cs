@@ -1,4 +1,6 @@
-﻿namespace mau_assignment_4.Services;
+﻿using mau_assignment_4.Enums;
+
+namespace mau_assignment_4.Services;
 
 public class AnimalComparer(SortOption sortOption, bool isReverseOrder) : IComparer<Animal>
 {

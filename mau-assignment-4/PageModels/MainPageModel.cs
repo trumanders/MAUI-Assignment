@@ -73,6 +73,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		set
 		{
 			_isEditFoodScheduleButtonEnabled = value;
+			OnPropertyChanged(nameof(IsEditFoodScheduleButtonEnabled));
 		}
 	}
 	public bool AllowSaveChanges
@@ -85,7 +86,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		}
 	}
 
-	public bool IsSaveChangesEnabled
+	public bool IsSaveChangesEnabled // sätts inte till false vid spara ändringar
 	{
 		get => _isSaveChangesEnabled;
 		set
@@ -93,7 +94,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 			if (_isSaveChangesEnabled != value)
 			{
 				_isSaveChangesEnabled = value;
-				OnPropertyChanged(IsSaveChangesEnabled);
+				OnPropertyChanged(nameof(IsSaveChangesEnabled));
 			}
 		}
 	}
@@ -872,7 +873,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
 		if (newValue != null && propertyName != null)
-			SetEnableSaveChanges(newValue.ToString()!, propertyName!);
+			SetEnableSaveChanges(propertyName!, newValue.ToString()!);
 	}
 
 	/// <summary>
@@ -941,6 +942,8 @@ public partial class MainPageModel : INotifyPropertyChanged
 		AddedFoodScheduleEvents = string.Empty;
 		AddedFoodScheduleName = string.Empty;
 		AddedFoodSchedule = null;
+		IsSaveChangesEnabled = false;
+		AllowSaveChanges = false;
 	}
 	#endregion
 
@@ -1141,7 +1144,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		{
 			try
 			{
-				await ((AnimalService)_animalService).OpenJson();
+				await _animalService.Open();
 			}
 			catch (Exception ex)
 			{
@@ -1160,7 +1163,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 			}
 			try
 			{
-				await ((AnimalService)_animalService).Save();
+				await _animalService.Save();
 			}
 			catch (Exception ex)
 			{
@@ -1170,7 +1173,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		
 		OnMenuBarSaveAsTextFileClickedCommand = new Command(async () =>
 		{
-			await ((AnimalService)_animalService).SaveAsTextFile();
+			await _animalService.SaveAsTextFile();
 		});
 
 		OnMenuBarSaveAsJsonClickedCommand = new Command(async () =>
@@ -1185,7 +1188,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 			try
 			{
-				await ((AnimalService)_animalService).SaveAsJson();
+				await _animalService.SaveAsJson();
 			}
 			catch (Exception ex)
 			{
@@ -1197,7 +1200,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		{
 			try
 			{
-				await ((FoodScheduleService)_foodScheduleService).OpenXml();
+				await _foodScheduleService.Open();
 			}
 			catch (InvalidFoodScheduleXmlException ex)
 			{
@@ -1209,11 +1212,11 @@ public partial class MainPageModel : INotifyPropertyChanged
 		{
 			try
 			{
-				await ((FoodScheduleService)_foodScheduleService).SaveXml();
+				await _foodScheduleService.Save();
 			}
 			catch (Exception ex)
 			{
-				await _alertService.ShowAlert("Something went wrong", "Error:" + ex.Message, "Ok");
+				await _alertService.ShowSomethingWentWrongAlert(ex.Message);
 			}
 		});
 
@@ -1221,7 +1224,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		{
 			try
 			{
-				await ((FoodScheduleService)_foodScheduleService).SaveAsXml();
+				await _foodScheduleService.SaveAsXml();
 			}
 			catch (Exception ex)
 			{

@@ -6,8 +6,8 @@
 // here keeps the AnimalService decoupled from the ListService.
 public class AnimalService(
 	IPropertyValidator _propertyValidator,
-	IAlertService _alertService,
-	ISaveSettings saveSettings) : ListService<Animal>(saveSettings), IAnimalService
+	ISaveSettings _saveSettings,
+	IAlertService _alertService) : ListService<Animal>(_saveSettings, _alertService), IAnimalService
 {
 	#region Private fields
 	private static SortOption _previousSortOption;
@@ -173,24 +173,6 @@ public class AnimalService(
 	/// </summary>
 	public void ShowAnimalInfoStrings() =>
 		_alertService.ShowInfoStringsAlert(GetAnimalInfoStrings());
-
-	public async Task Save()
-	{
-		switch (SaveSettings.SaveFileFormat)
-		{
-			case SaveFileFormat.Json:
-				await SaveJson();
-				break;
-			case SaveFileFormat.Txt:
-				await SaveAsTextFile();
-				break;
-			case SaveFileFormat.None:
-				await _alertService.ShowAlert("No file to save", "Please choose File -> Save as Json / Text file first", "Ok");
-				break;
-			default:
-				throw new NotImplementedException("Unsupported file format");
-		}
-	}
 
 	#endregion
 

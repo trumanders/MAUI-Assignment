@@ -1,6 +1,8 @@
-﻿namespace mau_assignment_4.Services;
+﻿using mau_assignment_4.Serialization;
 
-public partial class ListService<T>(ISaveSettings _saveSettings) : ObservableObject, IListService<T>
+namespace mau_assignment_4.Services;
+
+public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _alertService) : ObservableObject, IListService<T>
 {
 	[ObservableProperty]
 	private ObservableCollection<T> _items = [];
@@ -93,117 +95,184 @@ public partial class ListService<T>(ISaveSettings _saveSettings) : ObservableObj
 		return [.. Items.Select(x => x?.ToString() ?? string.Empty)];
 	}
 
-	public async Task SaveJson()
-	{
-		var options = new JsonSerializerOptions
-		{
-			WriteIndented = true,
-			Converters = { new AnimalJsonConverter() }
-		};
-
-		using var stream = new FileStream(
-			_saveSettings.SaveLocation,
-			FileMode.Create,
-			FileAccess.Write);
-
-		await JsonSerializer.SerializeAsync(stream, Items, options);
-	}
 
 	public async Task SaveAsJson()
 	{
-		if (typeof(T) != typeof(Animal))
-			return;
-
-		_saveSettings.SaveFileFormat = SaveFileFormat.Json;
-
-		var options = new JsonSerializerOptions
+		try
 		{
-			WriteIndented = true,
-			Converters = { new AnimalJsonConverter() }
-		};
+			if (typeof(T) != typeof(Animal))
+				return;
 
-		using var stream = new MemoryStream();
-
-		await JsonSerializer.SerializeAsync(stream, Items, options);
-
-		stream.Position = 0;
-
-		var result = await FileSaver.SaveAsync("My animals.json", stream, CancellationToken.None);
-		_saveSettings.SaveLocation = result.FilePath;
-
-		if (result.IsSuccessful)
-		{
-			await new AlertService().ShowAlert("Animals saved", "Animal collection successfully saved!", "Ok");
-		}
-		else
-		{
-			await new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
-		}
-	}
-
-	public async Task OpenJson()
-	{
-		if (typeof(T) != typeof(Animal))
-			return;
-
-		var result = await FilePicker.Default.PickAsync(new PickOptions
-		{
-			PickerTitle = "Pick a JSON file",
-			FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+			var options = new JsonSerializerOptions
 			{
-				{ DevicePlatform.WinUI, new[] { ".json" } },
-				{ DevicePlatform.MacCatalyst, new[] { ".json" } },
-				{ DevicePlatform.iOS, new[] { "public.json" } },
-				{ DevicePlatform.Android, new[] { "application/json" } }
-			})
-		});
-
-		if (result != null)
-		{
-			using var stream = await result.OpenReadAsync();
-			var options = new JsonSerializerOptions()
-			{
+				WriteIndented = true,
 				Converters = { new AnimalJsonConverter() }
 			};
 
-			var animals = await JsonSerializer.DeserializeAsync(stream, typeof(List<T>), options);
-			if (animals is List<T> animalCollection)
+			using var stream = new MemoryStream();
+
+			await JsonSerializer.SerializeAsync(stream, Items, options);
+
+			stream.Position = 0;
+
+			var result = await FileSaver.SaveAsync("My animals.json", stream, CancellationToken.None);
+
+			if (result.IsSuccessful)
 			{
-				Items.Clear();
-				foreach (var item in animalCollection)
-					Items.Add(item);
+				await new AlertService().ShowAlert("Animals saved", "Animal collection successfully saved!", "Ok");
 			}
+			else
+			{
+				await new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
+			}
+			_saveSettings.SaveFileFormat = SaveFileFormat.Json;
+			_saveSettings.SaveLocation = result.FilePath;
 		}
-		if (result != null)
-			_saveSettings.SaveLocation = result.FullPath;
+		catch (Exception ex)
+		{
+			throw new Exception($"Error saving json file.\n\n{ex.Message}");
+		}
 	}
 
 	public async Task SaveAsTextFile()
-	{		
-		var fileSaver = FileSaver.Default;
-		var text = string.Join(Environment.NewLine, ToStringArray());
-		var bytes = Encoding.UTF8.GetBytes(text);
-		using var stream = new MemoryStream(bytes);
-		var result = await fileSaver.SaveAsync("All animals demo.txt", stream, new CancellationToken());
-		if (!result.IsSuccessful)
-			return;
+	{
+		try
+		{
+			var fileSaver = FileSaver.Default;
+			var text = string.Join(Environment.NewLine, ToStringArray());
+			var bytes = Encoding.UTF8.GetBytes(text);
+			using var stream = new MemoryStream(bytes);
+			var result = await fileSaver.SaveAsync("All animals demo.txt", stream, new CancellationToken());
+			if (!result.IsSuccessful)
+				return;
 
-		_saveSettings.SaveFileFormat = SaveFileFormat.Txt;
-		_saveSettings.SaveLocation = result.FilePath;
+			_saveSettings.SaveFileFormat = SaveFileFormat.Txt;
+			_saveSettings.SaveLocation = result.FilePath;
+		}
+		catch (Exception ex)
+		{
+			throw new Exception($"Error saving text file.\n\n{ex.Message}");
+		}
 	}
 
-	//public Task SaveTextFile()
-	//{
-	//	var 
-	//}
-
-	public async Task OpenXml()
+	public async Task SaveAsXml()
 	{
 		try
 		{
 			if (typeof(T) != typeof(FoodSchedule))
 				return;
 
+			using var stream = new MemoryStream();
+			var serializer = new XmlSerializer(typeof(List<FoodSchedule>));
+			serializer.Serialize(stream, Items.ToList());
+			stream.Position = 0;
+
+			var result = await FileSaver.SaveAsync("My food schedules.xml", stream, CancellationToken.None);
+
+			if (result.IsSuccessful)
+			{
+				await new AlertService().ShowAlert("Food schedules saved", "Food schedules successfully saved!", "Ok");
+			}
+			else
+			{
+				await new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
+			}
+			XmlSaveLocation = result.FilePath;
+		}
+		catch (Exception ex)
+		{
+			throw new Exception($"Error saving xml file\n\n{ex.Message}");
+		}
+	}
+
+	public async Task Open()
+	{
+		try
+		{
+			if (typeof(T) == typeof(FoodSchedule))
+			{
+				OpenXml();
+				return;
+			}
+
+			var result = await FilePicker.Default.PickAsync(new PickOptions
+			{
+				PickerTitle = "Pick a collection",
+				FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+				{
+					{ DevicePlatform.WinUI, new[] { ".json", ".txt" } },
+				})
+			});
+
+			if (result == null) return;
+
+			using var stream = await result.OpenReadAsync();
+			if (stream == null) return;
+
+			if (result.FileName.EndsWith(".txt"))
+			{
+				await OpenTextFile(stream);
+			}
+
+			if (result.FileName.EndsWith(".json"))
+			{
+				await OpenJson(stream);
+			}
+
+			_saveSettings.SaveLocation = result.FullPath;
+		}
+		catch (Exception ex)
+		{
+			throw new Exception("Error opening file: ", ex);
+		}
+	}
+
+	private async Task OpenJson(Stream stream)
+	{
+		try
+		{
+			var options = new JsonSerializerOptions()
+			{
+				Converters = { new AnimalJsonConverter() }
+			};
+			var animals = await JsonSerializer.DeserializeAsync(stream, typeof(List<T>), options);
+			if (animals is List<T> animalCollection)
+			{
+				DeleteAll();
+				foreach (var item in animalCollection)
+					Items.Add(item);
+			}
+			_saveSettings.SaveFileFormat = SaveFileFormat.Json;
+		}
+		catch (Exception ex)
+		{
+			throw new Exception($"Json file.\n\n{ex.Message}");
+		}
+	}
+	private async Task OpenTextFile(Stream stream)
+	{
+		try
+		{
+			DeleteAll();
+			var animals = AnimalTextFileDeserializer.AnimalTextFileDeserializeAsync(stream);
+
+			if (animals is List<T> animalCollection)
+			{
+				foreach (var animal in animalCollection)
+					Items.Add(animal);
+			}
+			_saveSettings.SaveFileFormat = SaveFileFormat.Txt;
+		}
+		catch (Exception ex)
+		{
+			throw new Exception($"Text file.\n\n{ex.Message}");
+		}
+	}
+
+	public async Task OpenXml()
+	{
+		try
+		{
 			var result = await FilePicker.Default.PickAsync(new PickOptions
 			{
 				PickerTitle = "Pick an XML file",
@@ -218,7 +287,6 @@ public partial class ListService<T>(ISaveSettings _saveSettings) : ObservableObj
 
 			if (result == null) return;
 
-			XmlSaveLocation = result.FullPath;
 			using var stream = await result.OpenReadAsync();
 			var serializer = new XmlSerializer(typeof(List<FoodSchedule>));
 
@@ -228,56 +296,113 @@ public partial class ListService<T>(ISaveSettings _saveSettings) : ObservableObj
 				foreach (var item in schedules.Cast<T>())
 					Items.Add(item);
 			}
+			_saveSettings.SaveLocation = result.FullPath;
+			_saveSettings.SaveFileFormat = SaveFileFormat.Xml;
 		}
 		catch (InvalidFoodScheduleXmlException ex)
 		{
-			throw new InvalidFoodScheduleXmlException(XmlSaveLocation!, "Error while reading food schedule xml file.", ex);
+			throw new InvalidFoodScheduleXmlException(XmlSaveLocation!, $"Food schedule xml file.\n\n{ex.Message}");
+		}
+	}
+
+	public async Task Save()
+	{
+		try
+		{
+			switch (SaveSettings.SaveFileFormat)
+			{
+				case SaveFileFormat.None:
+					await _alertService.ShowAlert("No file to save", "Please choose File -> Save as Json / Text file first", "Ok");
+					break;
+				case SaveFileFormat.Json:
+					await SaveJson();
+					break;
+				case SaveFileFormat.Txt:
+					await SaveTextFile();
+					break;
+				case SaveFileFormat.Xml:
+					await SaveXml();
+					break;
+				default:
+					throw new NotImplementedException("Unsupported file format");
+			}
+		}
+		catch (Exception ex)
+		{
+			throw new Exception($"Error saving file: ", ex);
+		}
+	}
+
+	public async Task SaveJson()
+	{
+		try
+		{
+			var options = new JsonSerializerOptions
+			{
+				WriteIndented = true,
+				Converters = { new AnimalJsonConverter() }
+			};
+
+			using var stream = new FileStream(
+				_saveSettings.SaveLocation,
+				FileMode.Create,
+				FileAccess.Write);
+
+			await JsonSerializer.SerializeAsync(stream, Items, options);
+		}
+		catch (Exception ex)
+		{
+			throw new Exception($"json file.\n\n{ex.Message}");
+		}
+	}
+
+
+	public async Task SaveTextFile()
+	{
+		try
+		{
+			var text = string.Join(Environment.NewLine, ToStringArray());
+			var bytes = Encoding.UTF8.GetBytes(text);
+
+			using var stream = new FileStream(
+				_saveSettings.SaveLocation,
+				FileMode.Create,
+				FileAccess.Write);
+
+			await stream.WriteAsync(bytes);
+		}
+		catch (Exception ex)
+		{
+			throw new Exception($"Text file.\n\n{ex.Message}");
 		}
 	}
 
 	public async Task SaveXml()
 	{
-		if (typeof(T) != typeof(FoodSchedule))
-			return;
-
-		if (string.IsNullOrEmpty(XmlSaveLocation))
+		try
 		{
-			await SaveAsXml();
+			if (typeof(T) != typeof(FoodSchedule))
+				return;
+
+			if (string.IsNullOrEmpty(XmlSaveLocation))
+			{
+				await SaveAsXml();
+			}
+			else
+			{
+				var serializer = new XmlSerializer(typeof(List<FoodSchedule>));
+
+				using var stream = new FileStream(
+					XmlSaveLocation,
+					FileMode.Create,
+					FileAccess.Write);
+
+				serializer.Serialize(stream, Items.ToList());
+			}
 		}
-		else
+		catch (Exception ex)
 		{
-			var serializer = new XmlSerializer(typeof(List<FoodSchedule>));
-
-			using var stream = new FileStream(
-				XmlSaveLocation,
-				FileMode.Create,
-				FileAccess.Write);
-
-			serializer.Serialize(stream, Items.ToList());
-		}
-	}
-
-
-	public async Task SaveAsXml()
-	{
-		if (typeof(T) != typeof(FoodSchedule))
-			return;
-
-		using var stream = new MemoryStream();
-		var serializer = new XmlSerializer(typeof(List<FoodSchedule>));
-		serializer.Serialize(stream, Items.ToList());
-		stream.Position = 0;
-
-		var result = await FileSaver.SaveAsync("My food schedules.xml", stream, CancellationToken.None);
-		XmlSaveLocation = result.FilePath;
-
-		if (result.IsSuccessful)
-		{
-			await new AlertService().ShowAlert("Food schedules saved", "Food schedules successfully saved!", "Ok");
-		}
-		else
-		{
-			await new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
+			throw new Exception($"xml file\n\n{ex.Message}");
 		}
 	}
 }
