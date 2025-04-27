@@ -934,11 +934,9 @@ public partial class MainPageModel : INotifyPropertyChanged
 		IsListAllSpeciesChecked = false;
 
 		SelectedAnimal = null;
-		SelectedFoodSchedule = null;
 		OnPropertyChanged(nameof(DietTypes));
 		OnPropertyChanged(nameof(PersonalName));
 		OnPropertyChanged(nameof(Animals));
-		IsAddFoodScheduleToUIButtonEnabled = false;
 		IsSaveChangesEnabled = false;
 		AddedFoodScheduleEvents = string.Empty;
 		AddedFoodScheduleName = string.Empty;
