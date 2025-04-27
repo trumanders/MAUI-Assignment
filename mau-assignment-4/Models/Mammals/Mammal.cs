@@ -19,9 +19,9 @@ public class Mammal : Animal
 	{
 		return
 			$"{base.ToString()}" +
-			$"Weight : {(WeightInGrams == null
+			$"Weight: {(WeightInGrams == null
 				? "" : (WeightInGrams + (WeightInGrams > 1 ? " grams" : " gram")))}\n" +
-			$"Lactation period : {(LactationPeriodInWeeks == null
+			$"Lactation period: {(LactationPeriodInWeeks == null
 				? "" : (LactationPeriodInWeeks + (LactationPeriodInWeeks > 1 ? " weeks" : " week")))}\n" +
 			$"Nursing: {(IsCurrentlyNursing ? "Yes" : "No")}\n" +
 			$"Pregnant: {(IsPregnant ? "Yes" : "No")}\n";

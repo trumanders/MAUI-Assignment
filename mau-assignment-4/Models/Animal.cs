@@ -1,4 +1,6 @@
-﻿namespace mau_assignment_4.Models;
+﻿using mau_assignment_4.Enums;
+
+namespace mau_assignment_4.Models;
 
 public class Animal
 {
