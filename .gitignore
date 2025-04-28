@@ -1,5 +1,10 @@
-/*.json
-/*.xml
+mau-assignment-4/*.json
+mau-assignment-4/*.txt
+mau-assignment-4/*.xml
+
+!mau-assignment-4/AllSpeciesCollectionDemo.txt
+!mau-assignment-4/AllSpeciesCollectionDemo.json
+!mau-assignment-4/FoodScheduleCollectionDemo.xml
 
 # Build
 bin/
