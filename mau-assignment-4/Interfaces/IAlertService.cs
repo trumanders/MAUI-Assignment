@@ -11,4 +11,5 @@ public interface IAlertService
 	public Task ShowInvalidFoodScheduleXmlAlert(string message);
 	public Task ShowSomethingWentWrongAlert(string message);
 	public Task<bool> ShowAskSaveChangesBeforeSaveJson();
+	public Task<bool> ShowAskSaveChangesInCollection(Type t);
 }

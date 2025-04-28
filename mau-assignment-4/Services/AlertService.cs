@@ -50,7 +50,24 @@ class AlertService : IAlertService
 		{
 			return mainPage.DisplayAlert(
 				"Update list?",
-				"You have unsaved changes. Do you want to inclide them in the list before saving to file?",
+				"You have unsaved changes. Do you want to include them in the list before saving to file?",
+				"Yes",
+				"No"
+			).ContinueWith(task => task.Result);
+		}
+		return Task.FromResult(false);
+	}
+
+	public Task<bool> ShowAskSaveChangesInCollection(Type t)
+	{
+		var mainPage = Application.Current?.Windows[0].Page;
+
+		if (mainPage != null)
+		{
+			var type = t == typeof(Animal) ? "animal" : (t == typeof(FoodSchedule) ? "food schedule" : "");
+			return mainPage.DisplayAlert(
+				"Save?",
+				$"You have changes in the {type} collection that are not saved to file. Save now?",
 				"Yes",
 				"No"
 			).ContinueWith(task => task.Result);
