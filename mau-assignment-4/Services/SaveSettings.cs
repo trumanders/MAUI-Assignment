@@ -6,4 +6,9 @@ public class SaveSettings : ISaveSettings
 {
 	public string? SaveLocation { get; set; }
 	public SaveFileFormat SaveFileFormat { get; set; } = SaveFileFormat.None;
+	public void SetSaveSettings(SaveFileFormat saveFileFormat, string saveLocation)
+	{
+		SaveFileFormat = saveFileFormat;
+		SaveLocation = saveLocation;
+	}
 }

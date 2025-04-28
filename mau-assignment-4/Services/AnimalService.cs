@@ -5,9 +5,8 @@
 // coupling between the AnimalService and the ListService. Injecting ListSerivce
 // here keeps the AnimalService decoupled from the ListService.
 public class AnimalService(
-	IPropertyValidator _propertyValidator,
-	ISaveSettings _saveSettings,
-	IAlertService _alertService) : ListService<Animal>(_saveSettings, _alertService), IAnimalService
+	IPropertyValidator _propertyValidator, ISaveSettings _saveSettings,	IAlertService _alertService)
+		: ListService<Animal>(_saveSettings, _alertService), IAnimalService
 {
 	#region Private fields
 	private static SortOption _previousSortOption;

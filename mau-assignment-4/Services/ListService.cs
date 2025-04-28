@@ -1,4 +1,5 @@
 ﻿using mau_assignment_4.Serialization;
+using System.Threading.Tasks;
 
 namespace mau_assignment_4.Services;
 
@@ -6,19 +7,18 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 {
 	[ObservableProperty]
 	private ObservableCollection<T> _items = [];
-	protected ISaveSettings SaveSettings
-	{
-		get => _saveSettings;
-	}
+	public ISaveSettings SaveSettings { get; set; }
+	public bool IsCollectionSaved { get; set; }
+
 
 	public string? XmlSaveLocation { get; set; } = null;
 
-	public int Count
-	{
-		get => throw new NotImplementedException();
-		set => throw new NotImplementedException();
-	}
-
+	/// <summary>
+	/// Gets the number of items in Items.
+	/// </summary>
+	/// <returns>The number of items in Items.</returns>
+	public int Count { get {  return _items.Count; } }
+		 
 	/// <summary>
 	/// Adds the passed object to the list.
 	/// </summary>
@@ -32,6 +32,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			return false;
 
 		Items.Add(objectToAdd);
+		IsCollectionSaved = false;
 		return true;
 	}
 
@@ -47,6 +48,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			return false;
 
 		Items[index] = newItem;
+		IsCollectionSaved = false;
 		return true;
 	}
 
@@ -82,6 +84,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			return false;
 
 		Items.RemoveAt(index);
+		IsCollectionSaved = false;
 
 		return true;
 	}
@@ -89,12 +92,41 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 	public void DeleteAll()
 	{
 		Items.Clear();
+		IsCollectionSaved = false;
 	}
 	public string[] ToStringArray()
 	{
 		return [.. Items.Select(x => x?.ToString() ?? string.Empty)];
 	}
 
+	public async Task Save()
+	{
+		try
+		{
+			switch (_saveSettings.SaveFileFormat)
+			{
+				case SaveFileFormat.None:
+					await _alertService.ShowAlert("No file to save", "Please choose File -> Save as Json / Text file first", "Ok");
+					break;
+				case SaveFileFormat.Json:
+					await SaveJson();
+					break;
+				case SaveFileFormat.Txt:
+					await SaveTextFile();
+					break;
+				case SaveFileFormat.Xml:
+					await SaveXml();
+					break;
+				default:
+					throw new NotImplementedException("Unsupported file format");
+			}
+		}
+		catch (Exception ex)
+		{
+			throw new Exception($"Error saving file: ", ex);
+		}
+		IsCollectionSaved = true;
+	}
 
 	public async Task SaveAsJson()
 	{
@@ -125,8 +157,8 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			{
 				await new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
 			}
-			_saveSettings.SaveFileFormat = SaveFileFormat.Json;
-			_saveSettings.SaveLocation = result.FilePath;
+			_saveSettings.SetSaveSettings(SaveFileFormat.Json, result.FilePath);
+			IsCollectionSaved = true;
 		}
 		catch (Exception ex)
 		{
@@ -146,8 +178,8 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			if (!result.IsSuccessful)
 				return;
 
-			_saveSettings.SaveFileFormat = SaveFileFormat.Txt;
-			_saveSettings.SaveLocation = result.FilePath;
+			_saveSettings.SetSaveSettings(SaveFileFormat.Txt, result.FilePath);
+			IsCollectionSaved = true;
 		}
 		catch (Exception ex)
 		{
@@ -178,6 +210,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 				await new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
 			}
 			XmlSaveLocation = result.FilePath;
+			IsCollectionSaved = true;
 		}
 		catch (Exception ex)
 		{
@@ -220,11 +253,25 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			}
 
 			_saveSettings.SaveLocation = result.FullPath;
+			IsCollectionSaved = true;
 		}
 		catch (Exception ex)
 		{
 			throw new Exception("Error opening file: ", ex);
 		}
+	}
+
+	public async Task New()
+	{
+		if (!IsCollectionSaved)
+		{
+			if (await _alertService.ShowAskSaveChangesInCollection(typeof(T)))
+				await Save();
+		}
+
+		DeleteAll();
+		_saveSettings.SetSaveSettings(SaveFileFormat.None, saveLocation: null);
+		IsCollectionSaved = true;
 	}
 
 	private async Task OpenJson(Stream stream)
@@ -269,7 +316,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 		}
 	}
 
-	public async Task OpenXml()
+	private async Task OpenXml()
 	{
 		try
 		{
@@ -296,8 +343,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 				foreach (var item in schedules.Cast<T>())
 					Items.Add(item);
 			}
-			_saveSettings.SaveLocation = result.FullPath;
-			_saveSettings.SaveFileFormat = SaveFileFormat.Xml;
+			_saveSettings.SetSaveSettings(SaveFileFormat.Xml, result.FullPath);
 		}
 		catch (InvalidFoodScheduleXmlException ex)
 		{
@@ -305,35 +351,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 		}
 	}
 
-	public async Task Save()
-	{
-		try
-		{
-			switch (SaveSettings.SaveFileFormat)
-			{
-				case SaveFileFormat.None:
-					await _alertService.ShowAlert("No file to save", "Please choose File -> Save as Json / Text file first", "Ok");
-					break;
-				case SaveFileFormat.Json:
-					await SaveJson();
-					break;
-				case SaveFileFormat.Txt:
-					await SaveTextFile();
-					break;
-				case SaveFileFormat.Xml:
-					await SaveXml();
-					break;
-				default:
-					throw new NotImplementedException("Unsupported file format");
-			}
-		}
-		catch (Exception ex)
-		{
-			throw new Exception($"Error saving file: ", ex);
-		}
-	}
-
-	public async Task SaveJson()
+	private async Task SaveJson()
 	{
 		try
 		{
@@ -357,7 +375,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 	}
 
 
-	public async Task SaveTextFile()
+	private async Task SaveTextFile()
 	{
 		try
 		{
@@ -377,14 +395,14 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 		}
 	}
 
-	public async Task SaveXml()
+	private async Task SaveXml()
 	{
 		try
 		{
 			if (typeof(T) != typeof(FoodSchedule))
 				return;
 
-			if (string.IsNullOrEmpty(XmlSaveLocation))
+			if (string.IsNullOrEmpty(_saveSettings.SaveLocation))
 			{
 				await SaveAsXml();
 			}
@@ -393,7 +411,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 				var serializer = new XmlSerializer(typeof(List<FoodSchedule>));
 
 				using var stream = new FileStream(
-					XmlSaveLocation,
+					_saveSettings.SaveLocation,
 					FileMode.Create,
 					FileAccess.Write);
 
@@ -405,4 +423,6 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			throw new Exception($"xml file\n\n{ex.Message}");
 		}
 	}
+
+
 }

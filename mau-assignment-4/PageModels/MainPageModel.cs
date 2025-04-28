@@ -13,7 +13,6 @@ public partial class MainPageModel : INotifyPropertyChanged
 	private readonly IFoodScheduleService _foodScheduleService;
 	private readonly IAlertService _alertService;
 
-	private const int _maxNameLength = 40;
 	private string? _ageInYears;
 	private string? _armSpanInCentimeters;
 	private string? _divingDepthInMeters;
@@ -1134,8 +1133,8 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 		OnMenuBarNewClickedCommand = new Command(() =>
 		{
-			_animalService.DeleteAll();
-			_foodScheduleService.DeleteAll();
+			_animalService.New();
+			_foodScheduleService.New();			
 			ClearUI();
 		});
 
@@ -1234,6 +1233,8 @@ public partial class MainPageModel : INotifyPropertyChanged
 		OnRemoveAddedFoodScheduleClickCommand = new Command(() =>
 		{
 			AddedFoodScheduleEvents = null;
+			AddedFoodScheduleName = null;
+			AddedFoodSchedule = null;
 			IsSaveChangesEnabled = true;
 			
 		});
