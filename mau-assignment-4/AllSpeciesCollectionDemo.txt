@@ -1,20 +1,20 @@
-Dolphin
-ID: 47
+Species: Dolphin
+Id: 47
 Personal name: Finnie Dip
 Age: 66 years
 Gender: Female
 Venomous: Yes
 Endangered: Yes
 Diet types: Insectivore, Piscivore, Folivore
-Weight : 503520 grams
-Lactation period : 30 weeks
+Weight: 503520 grams
+Lactation period: 30 weeks
 Nursing: No
 Pregnant: Yes
 Jump height: 200 centimeters
 Has unique markings: Yes
 
-Alligator
-ID: 18
+Species: Alligator
+Id: 18
 Personal name: Gally Gator
 Age: 8 years
 Gender: Female
@@ -24,8 +24,8 @@ Diet types: Carnivore
 Typical number of eggs laid: 1001
 Jaw strength: 100 PSI
 
-Eagle
-ID: 28
+Species: Eagle
+Id: 28
 Personal name: Glen Edge
 Age: 2 years
 Gender: Male
@@ -37,8 +37,8 @@ Egg incubation temperature: 20 celcius
 Talons length: 12 millimeters
 Has permanent injury: No
 
-Penguin
-ID: 9
+Species: Penguin
+Id: 25
 Personal name: Guinnie Pling
 Age: 21 years
 Gender: Female
@@ -48,10 +48,10 @@ Diet types: Herbivore, Omnivore, Frugivore, Piscivore
 Migratory pattern: Nomadic
 Egg incubation temperature: 30 celcius
 Diving depth: 30 meters
-Is hand fed: Yes
+Is hand fed: No
 
-Chameleon
-ID: 28
+Species: Chameleon
+Id: 28
 Personal name: Leon Clone
 Age: 19 years
 Gender: Male
@@ -62,8 +62,8 @@ Typical number of eggs laid: 2000
 Tongue length : 200 millimeters
 Regrown tail: Yes
 
-Komodo
-ID: 24
+Species: Komodo
+Id: 24
 Personal name: Modo Kodo
 Age: 45 years
 Gender: Male
@@ -73,23 +73,23 @@ Diet types: Herbivore, Carnivore, Folivore
 Typical number of eggs laid: 200
 Part of breeding program: No
 
-Gorilla
-ID: 31
+Species: Gorilla
+Id: 31
 Personal name: Rilla Grin
 Age: 
 Gender: Female
-Venomous: No
+Venomous: xcs21
 Endangered: Yes
 Diet types: Piscivore
-Weight : 300001 grams
-Lactation period : 21 weeks
+Weight: 300001 grams
+Lactation period: 21 weeks
 Nursing: Yes
 Pregnant: No
 Arm span: 298 centimeters
 Alpha male: No
 
-Parrot
-ID: 26
+Species: Parrot
+Id: 26
 Personal name: Rotty Perch
 Age: 5 years
 Gender: Male
@@ -101,16 +101,16 @@ Egg incubation temperature: 35 celcius
 Vocabulary size: 2 words
 Trained for performance: No
 
-Bat
-ID: 27
+Species: Bat
+Id: 27
 Personal name: Tabby Blink
 Age: 1 years
 Gender: Male
 Venomous: No
 Endangered: No
 Diet types: Herbivore, Carnivore, Insectivore
-Weight : 505 grams
-Lactation period : 11 weeks
+Weight: 505 grams
+Lactation period: 11 weeks
 Nursing: No
 Pregnant: No
 Wing area: 203 cm²

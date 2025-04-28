@@ -694,7 +694,7 @@
 							Stroke="Black"
 							StrokeThickness="1">
 							<Border.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding OnRemoveAddedFoodScheduleClickCommand}"/>
+								<TapGestureRecognizer Command="{Binding OnRemoveAddedFoodScheduleClickCommand}" />
 							</Border.GestureRecognizers>
 							<Label
 								FontSize="12"
