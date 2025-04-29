@@ -43,7 +43,7 @@ public partial class FoodSchedulePage : ContentPage
 	private void OnEventListItemClicked(object sender, ItemTappedEventArgs e)
 	{
 		_foodSchedulePageModel?
-			.OnEventListItemClickedCommand
+			.OnEventListItemClickedCommand?
 			.Execute(e);		
 	}
 
@@ -56,7 +56,7 @@ public partial class FoodSchedulePage : ContentPage
 	private void OnEventEntryChanged(object sender, TextChangedEventArgs e)
 	{
 		_foodSchedulePageModel?
-			.OnEventEntryChangedCommand
+			.OnEventEntryChangedCommand?
 			.Execute(e);
 	}
 
@@ -69,7 +69,7 @@ public partial class FoodSchedulePage : ContentPage
 	private void OnNameEntryChanged(object sender, TextChangedEventArgs e)
 	{
 		_foodSchedulePageModel?
-			.OnNameEntryChangedCommand
+			.OnNameEntryChangedCommand?
 			.Execute(e);
 	}
 }

@@ -10,7 +10,7 @@ public static class AnimalTextFileDeserializer
 	/// </summary>
 	/// <param name="stream">The text file contents</param>
 	/// <returns>Animal collection</returns>
-	public static List<Animal> AnimalTextFileDeserializeAsync(Stream stream)
+	public static List<Animal> AnimalTextFileDeserialize(Stream stream)
 	{
 		var animals = new List<Animal>();
 		var text = new StreamReader(stream).ReadToEnd();

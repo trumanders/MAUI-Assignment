@@ -904,7 +904,7 @@
 								<Label
 									FontSize="12"
 									HorizontalOptions="Center"
-									Text="Save changes"
+									Text="Apply changes"
 									TextColor="{Binding IsSaveChangesEnabled, Converter={StaticResource BoolToGrayConverter}}"
 									VerticalOptions="Center" />
 							</Border>

@@ -1,2 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ArrayOfFoodSchedule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+<ArrayOfFoodSchedule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <FoodSchedule>
+    <FoodScheduleEvents>
+      <Event>Morning: Whole prey (rats, rabbits, chickens )</Event>
+      <Event>Lunch: Whole rodents, eggs, small goats</Event>
+      <Event>Evening: Larger mammals (deer, wild boar), occasional fish</Event>
+    </FoodScheduleEvents>
+    <Name>Komodo</Name>
+  </FoodSchedule>
+  <FoodSchedule>
+    <FoodScheduleEvents>
+      <Event>Morning: Insects (crickets, roaches, locust s)</Event>
+      <Event>Lunch: Leafy greens (dandelion greens, collard greens)</Event>
+      <Event>Evening: Small insects, occasional fruit (berries, mangoes)</Event>
+    </FoodScheduleEvents>
+    <Name>Chameleon</Name>
+  </FoodSchedule>
+  <FoodSchedule>
+    <FoodScheduleEvents>
+      <Event>Morning: Whole fish (catfish, carp, tilapia)</Event>
+      <Event>Lunch: Chicken or turkey (whole or parts, like wings, necks)</Event>
+      <Event>Evening: Occasional mammal meat (rabbits, rodents)</Event>
+    </FoodScheduleEvents>
+    <Name>Alligator</Name>
+  </FoodSchedule>
+  <FoodSchedule>
+    <FoodScheduleEvents>
+      <Event>Morning: Fresh fruits (bananas, apples, pineapple), leafy greens</Event>
+      <Event>Lunch: Vegetables (carrots, corn, yams), nuts, seeds</Event>
+      <Event>Evening: Leafy greens (kale, spinach), protein-rich items (tofu, beans)</Event>
+    </FoodScheduleEvents>
+    <Name>Gorilla</Name>
+  </FoodSchedule>
+  <FoodSchedule>
+    <FoodScheduleEvents>
+      <Event>Morning: Fish (sardines, mackerel, anchovies)</Event>
+      <Event>Lunch: Squid, shrimp, or other shellfish</Event>
+      <Event>Evening: Fish or squid, occasional enrichment feeding with larger prey</Event>
+    </FoodScheduleEvents>
+    <Name>Dolphin</Name>
+  </FoodSchedule>
+  <FoodSchedule>
+    <FoodScheduleEvents>
+      <Event>Morning: Fruit (bananas, mangoes, berries)</Event>
+      <Event>Lunch: Insects (moths, beetles, crickets)</Event>
+      <Event>Evening: Mealworms, nectar, and other small fruits</Event>
+    </FoodScheduleEvents>
+    <Name>Bat</Name>
+  </FoodSchedule>
+  <FoodSchedule>
+    <FoodScheduleEvents>
+      <Event>Morning: Herring and capelin (5-8 whole fish)</Event>
+      <Event>Lunch: Vitamins hidden in fish</Event>
+      <Event>Evening: Smaller fish (smelt, sardines), optional vitamin supplementation</Event>
+    </FoodScheduleEvents>
+    <Name>Penguin</Name>
+  </FoodSchedule>
+  <FoodSchedule>
+    <FoodScheduleEvents>
+      <Event>Morning: Fresh fruits (bananas, mango, apples) and nuts</Event>
+      <Event>Lunch: Vegetables (carrots, leafy greens) and cooked grains</Event>
+      <Event>Evening: Pellets and seeds, occasional boiled egg for protein</Event>
+    </FoodScheduleEvents>
+    <Name>Parrot</Name>
+  </FoodSchedule>
+  <FoodSchedule>
+    <FoodScheduleEvents>
+      <Event>Lunch: Small bone-in meats (chicken necks, rabbit parts)</Event>
+      <Event>Evening: Occasional fasting day to mimic natural hunting</Event>
+      <Event>Morning: Whole prey (rats, quail, or fish)</Event>
+    </FoodScheduleEvents>
+    <Name>Eagle</Name>
+  </FoodSchedule>
+</ArrayOfFoodSchedule>

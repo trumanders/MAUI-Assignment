@@ -25,16 +25,16 @@ Typical number of eggs laid: 1001
 Jaw strength: 100 PSI
 
 Species: Eagle
-Id: 28
+Id: 85
 Personal name: Glen Edge
-Age: 2 years
+Age: 5 years
 Gender: Male
 Venomous: No
 Endangered: Yes
 Diet types: Insectivore, Piscivore
-Migratory pattern: Complete
+Migratory pattern: Irregular
 Egg incubation temperature: 20 celcius
-Talons length: 12 millimeters
+Talons length: 120 millimeters
 Has permanent injury: No
 
 Species: Penguin
@@ -78,7 +78,7 @@ Id: 31
 Personal name: Rilla Grin
 Age: 
 Gender: Female
-Venomous: xcs21
+Venomous: No
 Endangered: Yes
 Diet types: Piscivore
 Weight: 300001 grams
