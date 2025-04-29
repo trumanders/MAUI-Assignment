@@ -11,7 +11,7 @@ public interface IListService<T>
 	public void DeleteAll();
 	public ISaveSettings SaveSettings { get; set;}
 	public Task Open();
-	public Task Save();
+	public Task<bool> Save();
 	public Task SaveAsJson();
 	public Task SaveAsTextFile();
 	public Task SaveAsXml();

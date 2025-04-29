@@ -1131,10 +1131,10 @@ public partial class MainPageModel : INotifyPropertyChanged
 			IsAddFoodScheduleToUIButtonEnabled = true;
 		});
 
-		OnMenuBarNewClickedCommand = new Command(() =>
+		OnMenuBarNewClickedCommand = new Command(async () =>
 		{
-			_animalService.New();
-			_foodScheduleService.New();			
+			await _animalService.New();
+			await _foodScheduleService.New();			
 			ClearUI();
 		});
 
@@ -1276,8 +1276,11 @@ public partial class MainPageModel : INotifyPropertyChanged
 		{
 			if (m.Value is FoodSchedule foodSchedule)
 			{
+				_foodScheduleService.ChangeAt(foodSchedule, FoodSchedules.IndexOf(foodSchedule));
 				if (foodSchedule == AddedFoodSchedule) //LÄGG INTE IN SCHEDULE OM SCHEDULE-RUTAN ÄR TOM!
+				{					
 					UpdateAddedFoodSchedule();
+				}
 			}
 		});
 	}

@@ -1,5 +1,4 @@
 ﻿using mau_assignment_4.Serialization;
-using System.Threading.Tasks;
 
 namespace mau_assignment_4.Services;
 
@@ -8,7 +7,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 	[ObservableProperty]
 	private ObservableCollection<T> _items = [];
 	public ISaveSettings SaveSettings { get; set; }
-	public bool IsCollectionSaved { get; set; }
+	public bool IsCollectionSaved { get; set; } = true;
 
 
 	public string? XmlSaveLocation { get; set; } = null;
@@ -17,8 +16,8 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 	/// Gets the number of items in Items.
 	/// </summary>
 	/// <returns>The number of items in Items.</returns>
-	public int Count { get {  return _items.Count; } }
-		 
+	public int Count { get { return _items.Count; } }
+
 	/// <summary>
 	/// Adds the passed object to the list.
 	/// </summary>
@@ -99,33 +98,39 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 		return [.. Items.Select(x => x?.ToString() ?? string.Empty)];
 	}
 
-	public async Task Save()
+	public async Task<bool> Save()
 	{
+		var fileFormat = _saveSettings.SaveFileFormat;
 		try
 		{
-			switch (_saveSettings.SaveFileFormat)
+			if (fileFormat == SaveFileFormat.None)
 			{
-				case SaveFileFormat.None:
-					await _alertService.ShowAlert("No file to save", "Please choose File -> Save as Json / Text file first", "Ok");
-					break;
-				case SaveFileFormat.Json:
-					await SaveJson();
-					break;
-				case SaveFileFormat.Txt:
-					await SaveTextFile();
-					break;
-				case SaveFileFormat.Xml:
-					await SaveXml();
-					break;
-				default:
-					throw new NotImplementedException("Unsupported file format");
+				await _alertService.ShowAlert("No file to save", "Please choose File -> Save as Json / Text file first", "Ok");
+				IsCollectionSaved = false;
+				return false;
 			}
+
+			if (fileFormat == SaveFileFormat.Json)
+			{
+				await SaveJson();
+			}
+
+			if (fileFormat == SaveFileFormat.Txt)
+			{
+				await SaveTextFile();
+			}
+
+			if (fileFormat == SaveFileFormat.Xml)
+			{
+				await SaveXml();
+			}
+			IsCollectionSaved = true;
+			return true;
 		}
 		catch (Exception ex)
 		{
 			throw new Exception($"Error saving file: ", ex);
 		}
-		IsCollectionSaved = true;
 	}
 
 	public async Task SaveAsJson()
@@ -220,6 +225,17 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 
 	public async Task Open()
 	{
+		var performOpen = true;
+		if (!IsCollectionSaved)
+		{
+			if (await _alertService.ShowAskSaveChangesInCollection(typeof(T)))
+			{
+				performOpen = await Save();
+			}
+		}
+		if (!performOpen)
+			return;
+
 		try
 		{
 			if (typeof(T) == typeof(FoodSchedule))
@@ -263,15 +279,20 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 
 	public async Task New()
 	{
+		bool performNew = true;
 		if (!IsCollectionSaved)
 		{
 			if (await _alertService.ShowAskSaveChangesInCollection(typeof(T)))
-				await Save();
+			{
+				performNew = await Save();
+			}
 		}
-
-		DeleteAll();
-		_saveSettings.SetSaveSettings(SaveFileFormat.None, saveLocation: null);
-		IsCollectionSaved = true;
+		if (performNew)
+		{
+			DeleteAll();
+			_saveSettings.SetSaveSettings(SaveFileFormat.None, saveLocation: null);
+			IsCollectionSaved = true;
+		}
 	}
 
 	private async Task OpenJson(Stream stream)
