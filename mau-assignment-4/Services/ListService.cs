@@ -7,8 +7,6 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 	[ObservableProperty]
 	private ObservableCollection<T> _items = [];
 	public ISaveSettings SaveSettings { get; set; }
-	public bool IsCollectionSaved { get; set; } = true;
-
 
 	public string? XmlSaveLocation { get; set; } = null;
 
@@ -31,7 +29,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			return false;
 
 		Items.Add(objectToAdd);
-		IsCollectionSaved = false;
+		_saveSettings.IsCollectionSaved = false;
 		return true;
 	}
 
@@ -47,7 +45,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			return false;
 
 		Items[index] = newItem;
-		IsCollectionSaved = false;
+		_saveSettings.IsCollectionSaved = false;
 		return true;
 	}
 
@@ -83,7 +81,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			return false;
 
 		Items.RemoveAt(index);
-		IsCollectionSaved = false;
+		_saveSettings.IsCollectionSaved = false;
 
 		return true;
 	}
@@ -91,7 +89,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 	public void DeleteAll()
 	{
 		Items.Clear();
-		IsCollectionSaved = false;
+		_saveSettings.IsCollectionSaved = false;
 	}
 	public string[] ToStringArray()
 	{
@@ -106,7 +104,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			if (fileFormat == SaveFileFormat.None)
 			{
 				await _alertService.ShowAlert("No file to save", "Please choose File -> Save as Json / Text file first", "Ok");
-				IsCollectionSaved = false;
+				_saveSettings.IsCollectionSaved = false;
 				return false;
 			}
 
@@ -124,7 +122,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			{
 				await SaveXml();
 			}
-			IsCollectionSaved = true;
+			_saveSettings.IsCollectionSaved = true;
 			return true;
 		}
 		catch (Exception ex)
@@ -163,7 +161,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 				await new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
 			}
 			_saveSettings.SetSaveSettings(SaveFileFormat.Json, result.FilePath);
-			IsCollectionSaved = true;
+			_saveSettings.IsCollectionSaved = true;
 		}
 		catch (Exception ex)
 		{
@@ -184,7 +182,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 				return;
 
 			_saveSettings.SetSaveSettings(SaveFileFormat.Txt, result.FilePath);
-			IsCollectionSaved = true;
+			_saveSettings.IsCollectionSaved = true;
 		}
 		catch (Exception ex)
 		{
@@ -215,7 +213,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 				await new AlertService().ShowAlert("Saving failed", result.Exception?.Message, "Ok");
 			}
 			XmlSaveLocation = result.FilePath;
-			IsCollectionSaved = true;
+			_saveSettings.IsCollectionSaved = true;
 		}
 		catch (Exception ex)
 		{
@@ -226,7 +224,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 	public async Task Open()
 	{
 		var performOpen = true;
-		if (!IsCollectionSaved)
+		if (!_saveSettings.IsCollectionSaved)
 		{
 			if (await _alertService.ShowAskSaveChangesInCollection(typeof(T)))
 			{
@@ -269,7 +267,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 			}
 
 			_saveSettings.SaveLocation = result.FullPath;
-			IsCollectionSaved = true;
+			_saveSettings.IsCollectionSaved = true;
 		}
 		catch (Exception ex)
 		{
@@ -280,7 +278,7 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 	public async Task New()
 	{
 		bool performNew = true;
-		if (!IsCollectionSaved)
+		if (!_saveSettings.IsCollectionSaved)
 		{
 			if (await _alertService.ShowAskSaveChangesInCollection(typeof(T)))
 			{
@@ -291,7 +289,6 @@ public partial class ListService<T>(ISaveSettings _saveSettings, IAlertService _
 		{
 			DeleteAll();
 			_saveSettings.SetSaveSettings(SaveFileFormat.None, saveLocation: null);
-			IsCollectionSaved = true;
 		}
 	}
 
